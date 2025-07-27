@@ -1,0 +1,98 @@
+Build a fully working, production-ready Web3 support dApp inspired by https://alldappnet.web.app. The app should function as a decentralized protocol interface that helps users resolve Web3-related issues through wallet interactions, automated validation, and smart contract flows.
+
+💡 Core Concept:
+A fully decentralized help desk for Web3, allowing users to connect their wallet, choose a specific issue (e.g., Airdrop Claim, NFT Transfer Failure, DeFi Farming Bug), and interact with blockchain-based tools to resolve it — all without any human intervention.
+
+✅ Key Features (Required):
+1. Landing Page
+Grid of support categories, each with an icon, title, and description:
+
+Examples: Slippage, Claim Airdrop, Bridge Wallet, Validation, NFTs, Swap, DeFi Farming, KYC, Presale, Migration, Wallet Glitch, etc.
+
+Search bar and real-time filter
+
+Responsive and mobile-optimized
+
+2. Dynamic Issue Pages (/issue/[slug])
+Each support flow gets its own route
+
+Content includes:
+
+Explanation of the issue
+
+Wallet connect button (using Wagmi + RainbowKit)
+
+Issue-specific logic (e.g., smart contract interaction, wallet signature, RPC call)
+
+Real-time feedback: loading state, success, or error message
+
+3. Smart Contract Integration
+Deploy or simulate contracts for:
+
+Airdrop claiming (merkle proof / eligibility check)
+
+Bridging (LayerZero, Celer, or mock bridge)
+
+Token staking/unstaking
+
+Wallet validation (via signed message)
+
+Asset migration (from v1 to v2 contract)
+
+KYC hash verification
+
+Use Ethers.js or Viem to call/read/write to contracts
+
+4. Connect Wallet
+Use RainbowKit + Wagmi (Viem-powered)
+
+Support MetaMask, WalletConnect, Coinbase Wallet
+
+Detect network and auto-switch if needed
+
+5. Decentralized Routing Logic
+No backend involvement for most flows
+
+User signs a message or performs a transaction
+
+Optional: Use Firebase or Supabase to log anonymized metadata (e.g., category used, wallet address, status)
+
+6. AI Integration (Optional)
+Use OpenAI/GPT API to:
+
+Suggest solutions based on free-text input
+
+Provide contextual help/explanation for the selected issue
+
+⚙️ Technical Stack (Recommended)
+Frontend: Next.js + Tailwind CSS + ShadCN UI + Framer Motion
+
+Wallet: RainbowKit + Wagmi (Viem + Ethers.js under the hood)
+
+Contracts: Solidity (deploy to Polygon Mumbai, Base Goerli, or mainnet)
+
+Infra: Alchemy or Infura (RPC), Vercel (hosting), Firebase (optional analytics)
+
+State: Zustand or React Context for global wallet/session data
+
+🔐 Security
+NEVER request private keys or seed phrases
+
+Ensure all actions are explicitly signed by the user
+
+Warn users when interacting with testnet vs mainnet
+
+Include gas fee estimators, fail-safes, and tx previews
+
+✅ Final Result
+A live dApp that:
+
+Helps users solve wallet and dApp issues (Claim, Validate, Migrate, etc.)
+
+Is fully decentralized
+
+Supports all common wallets
+
+Runs on real smart contracts
+
+Ready for mainnet deployment with a clean modern UI
