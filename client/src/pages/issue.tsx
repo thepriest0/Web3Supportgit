@@ -229,12 +229,31 @@ export default function Issue() {
 
   // Get wallet options for the connection interface
   const walletOptions = [
-    { id: 'metamask', name: 'MetaMask', icon: '🦊' },
-    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷' },
-    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗' },
-    { id: 'trust', name: 'Trust Wallet', icon: '🛡️' },
-    { id: 'phantom', name: 'Phantom', icon: '👻' },
-    { id: 'rainbow', name: 'Rainbow', icon: '🌈' },
+    // Tier 1 - Most Popular
+    { id: 'metamask', name: 'MetaMask', icon: '🦊', tier: 1, color: 'hover:border-orange-300 hover:bg-orange-50' },
+    { id: 'trust', name: 'Trust Wallet', icon: '🛡️', tier: 1, color: 'hover:border-blue-300 hover:bg-blue-50' },
+    { id: 'phantom', name: 'Phantom', icon: '👻', tier: 1, color: 'hover:border-purple-300 hover:bg-purple-50' },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷', tier: 1, color: 'hover:border-blue-300 hover:bg-blue-50' },
+    
+    // Tier 2 - Popular Options
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', tier: 2, color: 'hover:border-indigo-300 hover:bg-indigo-50' },
+    { id: 'rainbow', name: 'Rainbow', icon: '🌈', tier: 2, color: 'hover:border-pink-300 hover:bg-pink-50' },
+    { id: 'ledger', name: 'Ledger', icon: '🔐', tier: 2, color: 'hover:border-green-300 hover:bg-green-50' },
+    { id: 'trezor', name: 'Trezor', icon: '🔒', tier: 2, color: 'hover:border-gray-300 hover:bg-gray-50' },
+    
+    // Tier 3 - Additional Options
+    { id: 'exodus', name: 'Exodus', icon: '🚀', tier: 3, color: 'hover:border-indigo-300 hover:bg-indigo-50' },
+    { id: 'atomic', name: 'Atomic Wallet', icon: '⚛️', tier: 3, color: 'hover:border-red-300 hover:bg-red-50' },
+    { id: 'safepal', name: 'SafePal', icon: '🔰', tier: 3, color: 'hover:border-yellow-300 hover:bg-yellow-50' },
+    { id: 'bitget', name: 'Bitget Wallet', icon: '💎', tier: 3, color: 'hover:border-cyan-300 hover:bg-cyan-50' },
+    { id: 'okx', name: 'OKX Wallet', icon: '🎯', tier: 3, color: 'hover:border-emerald-300 hover:bg-emerald-50' },
+    { id: 'binance', name: 'Binance Wallet', icon: '⚡', tier: 3, color: 'hover:border-yellow-300 hover:bg-yellow-50' },
+    { id: 'argent', name: 'Argent', icon: '🛡️', tier: 3, color: 'hover:border-blue-300 hover:bg-blue-50' },
+    { id: 'zengo', name: 'Zengo', icon: '🔮', tier: 3, color: 'hover:border-purple-300 hover:bg-purple-50' },
+    { id: 'bestwallet', name: 'Best Wallet', icon: '⭐', tier: 3, color: 'hover:border-amber-300 hover:bg-amber-50' },
+    { id: 'tangem', name: 'Tangem', icon: '💳', tier: 3, color: 'hover:border-slate-300 hover:bg-slate-50' },
+    { id: 'uniswap', name: 'Uniswap Wallet', icon: '🦄', tier: 3, color: 'hover:border-pink-300 hover:bg-pink-50' },
+    { id: 'robinhood', name: 'Robinhood Wallet', icon: '🏹', tier: 3, color: 'hover:border-green-300 hover:bg-green-50' },
   ];
 
   const getStepContent = () => {
@@ -248,19 +267,75 @@ export default function Issue() {
             
             {!selectedWalletType ? (
               <>
-                <h4 className="font-medium text-gray-900 mb-4">Choose your wallet:</h4>
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  {walletOptions.map((wallet) => (
-                    <Button
-                      key={wallet.id}
-                      variant="outline"
-                      className="h-16 flex flex-col items-center justify-center space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
-                      onClick={() => setSelectedWalletType(wallet.name)}
-                    >
-                      <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                      <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">{wallet.name}</span>
-                    </Button>
-                  ))}
+                <h4 className="font-medium text-gray-900 mb-6">Choose your wallet to connect:</h4>
+                
+                {/* Most Popular Section */}
+                <div className="mb-6">
+                  <h5 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    Most Popular
+                  </h5>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {walletOptions.filter(w => w.tier === 1).map((wallet) => (
+                      <Button
+                        key={wallet.id}
+                        variant="outline"
+                        className={`h-20 flex flex-col items-center justify-center space-y-2 border-gray-200 ${wallet.color} transition-all duration-200 group shadow-sm hover:shadow-md`}
+                        onClick={() => setSelectedWalletType(wallet.name)}
+                      >
+                        <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                        <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center leading-tight">{wallet.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hardware Wallets Section */}
+                <div className="mb-6">
+                  <h5 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                    Hardware Wallets
+                  </h5>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {walletOptions.filter(w => w.tier === 2).map((wallet) => (
+                      <Button
+                        key={wallet.id}
+                        variant="outline"
+                        className={`h-18 flex flex-col items-center justify-center space-y-1 border-gray-200 ${wallet.color} transition-all duration-200 group`}
+                        onClick={() => setSelectedWalletType(wallet.name)}
+                      >
+                        <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                        <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center leading-tight">{wallet.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* More Options - Collapsible */}
+                <div className="mb-6">
+                  <details className="group">
+                    <summary className="cursor-pointer text-sm font-medium text-gray-700 mb-3 flex items-center hover:text-blue-600 transition-colors">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                      More Options
+                      <svg className="w-4 h-4 ml-2 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-3">
+                      {walletOptions.filter(w => w.tier === 3).map((wallet) => (
+                        <Button
+                          key={wallet.id}
+                          variant="outline"
+                          size="sm"
+                          className={`h-16 flex flex-col items-center justify-center space-y-1 border-gray-200 ${wallet.color} transition-all duration-200 group text-xs`}
+                          onClick={() => setSelectedWalletType(wallet.name)}
+                        >
+                          <span className="text-lg group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                          <span className="font-medium text-gray-700 group-hover:text-blue-600 text-center leading-tight">{wallet.name}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  </details>
                 </div>
               </>
             ) : (
