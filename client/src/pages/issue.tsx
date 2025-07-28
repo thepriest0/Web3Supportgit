@@ -347,7 +347,7 @@ export default function Issue() {
                   <WalletGrid 
                     wallets={filteredWallets.map(w => ({ 
                       name: w.name, 
-                      icon: `/wallet-icons/${w.id}.png` 
+                      icon: w.icon // Use the emoji icon directly from the wallet data
                     }))}
                     onSelect={(wallet) => setSelectedWalletType(wallet.name)}
                   />
