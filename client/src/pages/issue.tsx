@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { WalletGrid } from '@/components/wallet-grid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+import { WalletGrid } from '@/components/wallet-grid';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -333,169 +333,25 @@ export default function Issue() {
             
             {!selectedWalletType ? (
               <>
-                <h4 className="font-medium text-gray-900 mb-6">Choose your wallet to connect:</h4>
-                
-                {/* Search Bar */}
                 <div className="mb-6">
                   <Input
                     type="text"
-                    placeholder="Search wallets... (e.g. MetaMask, Phantom, Ledger)"
+                    placeholder="Search wallets..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full"
                   />
                 </div>
 
-                {/* Display search results or categories */}
-                <div className="max-h-[600px] overflow-y-auto px-4">
-                  <WalletGrid
-                    wallets={filteredWallets.map(wallet => ({
-                      name: wallet.name,
-                      icon: wallet.icon // Use the emoji directly
+                <div className="max-h-[400px] overflow-y-auto pr-2">
+                  <WalletGrid 
+                    wallets={filteredWallets.map(w => ({ 
+                      name: w.name, 
+                      icon: `/wallet-icons/${w.id}.png` 
                     }))}
                     onSelect={(wallet) => setSelectedWalletType(wallet.name)}
-                        >
-                          <div className="flex items-center space-x-2 w-full">
-                            <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                            <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{wallet.name}</span>
-                          </div>
-                          <div className="flex flex-wrap gap-1 w-full">
-                            {wallet.chains.slice(0, 4).map((chain, index) => (
-                              <span key={index} className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
-                                {chain}
-                              </span>
-                            ))}
-                            {wallet.chains.length > 4 && (
-                              <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
-                                +{wallet.chains.length - 4} more
-                              </span>
-                            )}
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    {/* Most Popular Section */}
-                    <div className="mb-6">
-                      <h5 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        Most Popular
-                      </h5>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {getWalletsByCategory('Popular').map((wallet) => (
-                          <Button
-                            key={wallet.id}
-                            variant="outline"
-                            className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 group shadow-sm hover:shadow-md text-left"
-                            onClick={() => setSelectedWalletType(wallet.name)}
-                          >
-                            <div className="flex items-center space-x-2 w-full">
-                              <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                              <span className="text-sm font-semibold text-gray-900 group-hover:text-green-600">{wallet.name}</span>
-                            </div>
-                            <div className="flex flex-wrap gap-1 w-full">
-                              {wallet.chains.slice(0, 5).map((chain, index) => (
-                                <span key={index} className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-                                  {chain}
-                                </span>
-                              ))}
-                              {wallet.chains.length > 5 && (
-                                <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-                                  +{wallet.chains.length - 5}
-                                </span>
-                              )}
-                            </div>
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Hardware Wallets Section */}
-                    <div className="mb-6">
-                      <h5 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-                        <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                        Hardware Wallets
-                      </h5>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {getWalletsByCategory('Hardware').map((wallet) => (
-                          <Button
-                            key={wallet.id}
-                            variant="outline"
-                            className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group text-left"
-                            onClick={() => setSelectedWalletType(wallet.name)}
-                          >
-                            <div className="flex items-center space-x-2 w-full">
-                              <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                              <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{wallet.name}</span>
-                            </div>
-                            <div className="flex flex-wrap gap-1 w-full">
-                              {wallet.chains.slice(0, 4).map((chain, index) => (
-                                <span key={index} className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                                  {chain}
-                                </span>
-                              ))}
-                              {wallet.chains.length > 4 && (
-                                <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                                  +{wallet.chains.length - 4}
-                                </span>
-                              )}
-                            </div>
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* More Categories - Collapsible */}
-                    {['Exchange', 'Desktop', 'Mobile', 'Specialized', 'Web3'].map((categoryName) => {
-                      const categoryWallets = getWalletsByCategory(categoryName);
-                      if (categoryWallets.length === 0) return null;
-                      
-                      return (
-                        <div key={categoryName} className="mb-4">
-                          <details className="group">
-                            <summary className="cursor-pointer text-sm font-medium text-gray-700 mb-3 flex items-center hover:text-blue-600 transition-colors">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                              {categoryName} Wallets ({categoryWallets.length})
-                              <svg className="w-4 h-4 ml-2 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </summary>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">
-                              {categoryWallets.map((wallet) => (
-                                <Button
-                                  key={wallet.id}
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-auto p-2 flex flex-col items-start space-y-1 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 group text-left"
-                                  onClick={() => setSelectedWalletType(wallet.name)}
-                                >
-                                  <div className="flex items-center space-x-2 w-full">
-                                    <span className="text-lg group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                                    <span className="text-xs font-medium text-gray-900 group-hover:text-purple-600">{wallet.name}</span>
-                                  </div>
-                                  <div className="flex flex-wrap gap-1 w-full">
-                                    {wallet.chains.slice(0, 3).map((chain, index) => (
-                                      <span key={index} className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                                        {chain}
-                                      </span>
-                                    ))}
-                                    {wallet.chains.length > 3 && (
-                                      <span className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                                        +{wallet.chains.length - 3}
-                                      </span>
-                                    )}
-                                  </div>
-                                </Button>
-                              ))}
-                            </div>
-                          </details>
-                        </div>
-                      );
-                    })}
-                  </>
-                )}
+                  />
+                </div>
               </>
             ) : (
               <>
