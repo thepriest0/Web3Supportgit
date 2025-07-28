@@ -7,12 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { WalletConnection } from '@/components/wallet-connection';
 import { getCategoryBySlug } from '@/lib/support-categories';
 import { useWeb3Operations } from '@/hooks/use-web3';
 import { useProtocolOperations } from '@/hooks/use-protocol-operations';
 import { useWeb3 } from '@/providers/web3-provider';
 import { getNetworkName, isTestnet, estimateGasForFunction } from '@/lib/contracts';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ArrowLeft, AlertTriangle, CheckCircle, Loader2, ExternalLink } from 'lucide-react';
 import { Link } from 'wouter';
 import { formatEther } from 'viem';
@@ -157,7 +157,7 @@ export default function Issue() {
               and sign a verification message.
             </p>
             <div className="flex justify-center">
-              <ConnectButton />
+              <WalletConnection />
             </div>
           </>
         ) : (
