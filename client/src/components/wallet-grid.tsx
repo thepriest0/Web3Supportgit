@@ -15,11 +15,14 @@ export function WalletGrid({ wallets, onSelect }: WalletGridProps) {
           className="flex flex-col items-center justify-center gap-3 h-auto p-4 hover:bg-gray-50 transition-all border rounded-xl"
           onClick={() => onSelect(wallet)}
         >
-          <div className="relative w-16 h-16">
+          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border-2 border-gray-100">
             <img
               src={wallet.icon}
               alt={wallet.name}
-              className="w-full h-full"
+              className="w-12 h-12 object-contain rounded-full"
+              onError={(e) => {
+                e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${wallet.name}`;
+              }}
             />
           </div>
           <span className="text-sm text-center font-medium text-gray-900">{wallet.name}</span>
