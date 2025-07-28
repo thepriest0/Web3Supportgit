@@ -13,14 +13,30 @@ interface WalletConnectionProps {
 }
 
 const FAKE_WALLETS = [
-  { name: 'MetaMask', icon: '🦊' },
-  { name: 'Coinbase Wallet', icon: '🔷' },
-  { name: 'WalletConnect', icon: '🔗' },
-  { name: 'Trust Wallet', icon: '🛡️' },
-  { name: 'Phantom', icon: '👻' },
-  { name: 'SafeWallet', icon: '🔒' },
-  { name: 'Rainbow', icon: '🌈' },
-  { name: 'Uniswap Wallet', icon: '🦄' },
+  { name: 'Xaman wallet', icon: '/wallet-icons/xaman.png' },
+  { name: 'Phantom wallet', icon: '/wallet-icons/phantom.png' },
+  { name: 'Solana Wallet', icon: '/wallet-icons/solana.png' },
+  { name: 'UNISWAP Wallet', icon: '/wallet-icons/uniswap.png' },
+  { name: 'Best Wallet', icon: '/wallet-icons/best.png' },
+  { name: 'Wallet Connect', icon: '/wallet-icons/walletconnect.png' },
+  { name: 'Trust', icon: '/wallet-icons/trust.png' },
+  { name: 'Solfare Wallet', icon: '/wallet-icons/solfare.png' },
+  { name: 'Metamask', icon: '/wallet-icons/metamask.png' },
+  { name: 'Ledger', icon: '/wallet-icons/ledger.png' },
+  { name: 'Coinbase', icon: '/wallet-icons/coinbase.png' },
+  { name: 'Unisat Wallet', icon: '/wallet-icons/unisat.png' },
+  { name: 'okx Wallet', icon: '/wallet-icons/okx.png' },
+  { name: 'Sui Wallet', icon: '/wallet-icons/sui.png' },
+  { name: 'Leather Wallet', icon: '/wallet-icons/leather.png' },
+  { name: 'APTOS Wallet', icon: '/wallet-icons/aptos.png' },
+  { name: 'Asigna Wallet', icon: '/wallet-icons/asigna.png' },
+  { name: 'AVAXC Wallet', icon: '/wallet-icons/avaxc.png' },
+  { name: 'Base Wallet', icon: '/wallet-icons/base.png' },
+  { name: 'BITTENSOR Wallet', icon: '/wallet-icons/bittensor.png' },
+  { name: 'AURORA Wallet', icon: '/wallet-icons/aurora.png' },
+  { name: 'Xverse Wallet', icon: '/wallet-icons/xverse.png' },
+  { name: 'OPTIMISM Wallet', icon: '/wallet-icons/optimism.png' },
+  { name: 'MyTon Wallet', icon: '/wallet-icons/myton.png' }
 ];
 
 export function WalletConnection({ 
