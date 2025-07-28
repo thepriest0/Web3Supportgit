@@ -1,13 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { useWeb3 } from '@/providers/web3-provider';
-import { getNetworkName, isTestnet } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
-import { Zap, Menu, X } from 'lucide-react';
-import { WalletConnection } from './wallet-connection';
+import { Zap, Menu, X, Wallet } from 'lucide-react';
 
 export function Navbar() {
-  const { isConnected, chainId } = useWeb3();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -36,24 +32,16 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Network Status Indicator */}
-            {isConnected && chainId && (
-              <div className={`hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full ${
-                isTestnet(chainId) 
-                  ? 'bg-yellow-50 text-yellow-700' 
-                  : 'bg-green-50 text-green-700'
-              }`}>
-                <div className={`w-2 h-2 rounded-full web3-pulse ${
-                  isTestnet(chainId) ? 'bg-yellow-500' : 'bg-green-500'
-                }`} />
-                <span className="text-sm font-medium">
-                  {getNetworkName(chainId)}
-                </span>
-              </div>
-            )}
-
-            {/* Wallet Connection Button */}
-            <WalletConnection compact={true} />
+            {/* Wallet Connection Button - Directs to Support Categories */}
+            <Link href="/">
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
+              >
+                <Wallet className="w-4 h-4 mr-2" />
+                Get Support
+              </Button>
+            </Link>
 
             {/* Mobile menu button */}
             <Button

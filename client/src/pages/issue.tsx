@@ -492,11 +492,11 @@ export default function Issue() {
           <span className="text-gray-900">{category.title}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Issue Information */}
-          <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
+        <div className="space-y-8">
+          {/* Issue Information Header */}
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div className="flex items-center space-x-3">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${category.bgColor}`}>
                     <Icon className={`w-6 h-6 ${category.color}`} />
@@ -512,32 +512,29 @@ export default function Issue() {
                     </div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{category.description}</p>
-
-                <Separator className="my-4" />
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Resolution Type:</span>
-                    <span className="font-medium">Automated</span>
+                <div className="grid grid-cols-3 gap-4 text-center sm:text-left">
+                  <div>
+                    <div className="text-xs text-gray-600">Type</div>
+                    <div className="text-sm font-medium">Automated</div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Security Level:</span>
-                    <span className="font-medium text-green-600">High</span>
+                  <div>
+                    <div className="text-xs text-gray-600">Security</div>
+                    <div className="text-sm font-medium text-green-600">High</div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Success Rate:</span>
-                    <span className="font-medium">98%</span>
+                  <div>
+                    <div className="text-xs text-gray-600">Success</div>
+                    <div className="text-sm font-medium">98%</div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">{category.description}</p>
+            </CardContent>
+          </Card>
 
           {/* Resolution Process */}
-          <div className="lg:col-span-2">
+          <div>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -547,45 +544,46 @@ export default function Issue() {
               </CardHeader>
               <CardContent>
                 {/* Progress Steps */}
-                <div className="flex items-center space-x-4 mb-8">
-                  {[
-                    { key: 'connect', label: 'Connect', icon: Wallet },
-                    { key: 'processing', label: 'Process', icon: Shield },
-                    { key: 'resolving', label: 'Resolve', icon: Zap },
-                    { key: 'complete', label: 'Complete', icon: CheckCircle }
-                  ].map((stepItem, index) => {
-                    const steps = ['connect', 'processing', 'resolving', 'complete'];
-                    const currentIndex = steps.indexOf(step);
-                    const isActive = step === stepItem.key;
-                    const isCompleted = currentIndex > index;
-                    const StepIcon = stepItem.icon;
-                    
-                    return (
-                      <div key={stepItem.key} className="flex items-center">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-all duration-300 ${
-                          isActive 
-                            ? 'bg-blue-500 text-white border-blue-500 animate-pulse' 
-                            : isCompleted
-                              ? 'bg-green-500 text-white border-green-500'
-                              : 'bg-white text-gray-600 border-gray-300'
-                        }`}>
-                          <StepIcon className="w-4 h-4" />
-                        </div>
-                        <div className="ml-2 hidden sm:block">
-                          <div className={`text-xs font-medium ${
+                <div className="mb-8">
+                  <div className="flex flex-wrap justify-center gap-4 sm:gap-0 sm:justify-between items-center">
+                    {[
+                      { key: 'connect', label: 'Connect', icon: Wallet },
+                      { key: 'processing', label: 'Process', icon: Shield },
+                      { key: 'resolving', label: 'Resolve', icon: Zap },
+                      { key: 'complete', label: 'Complete', icon: CheckCircle }
+                    ].map((stepItem, index) => {
+                      const steps = ['connect', 'processing', 'resolving', 'complete'];
+                      const currentIndex = steps.indexOf(step);
+                      const isActive = step === stepItem.key;
+                      const isCompleted = currentIndex > index;
+                      const StepIcon = stepItem.icon;
+                      
+                      return (
+                        <div key={stepItem.key} className="flex flex-col items-center space-y-1 relative">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-all duration-300 ${
+                            isActive 
+                              ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
+                              : isCompleted
+                                ? 'bg-green-500 text-white border-green-500'
+                                : 'bg-white text-gray-600 border-gray-300'
+                          }`}>
+                            <StepIcon className="w-4 h-4" />
+                          </div>
+                          <div className={`text-xs font-medium text-center ${
                             isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-600'
                           }`}>
                             {stepItem.label}
                           </div>
+                          {/* Connection line for desktop */}
+                          {index < 3 && (
+                            <div className={`hidden sm:block absolute top-4 left-8 w-16 h-0.5 transition-colors duration-300 ${
+                              isCompleted ? 'bg-green-500' : 'bg-gray-300'
+                            }`} />
+                          )}
                         </div>
-                        {index < 3 && (
-                          <div className={`w-12 h-0.5 mx-4 transition-colors duration-300 ${
-                            isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                          }`} />
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {getStepContent()}
