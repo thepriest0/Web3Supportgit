@@ -236,16 +236,16 @@ export default function Issue() {
   // Comprehensive wallet list with blockchain compatibility
   const allWallets = [
     // Tier 1 - Most Popular
-    { id: 'metamask', name: 'MetaMask', icon: '🦊', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
-    { id: 'trust', name: 'Trust Wallet', icon: '🛡️', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
-    { id: 'phantom', name: 'Phantom', icon: '👻', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
-    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
-    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', tier: 1, category: 'Popular', chains: ['Multi-chain'] },
-    { id: 'rainbow', name: 'Rainbow', icon: '🌈', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
+    { id: 'metamask', name: 'MetaMask', icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
+    { id: 'trust', name: 'Trust Wallet', icon: 'https://trustwallet.com/assets/images/trust_platform.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
+    { id: 'phantom', name: 'Phantom', icon: 'https://phantom.app/img/phantom-logo.svg', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: 'https://www.coinbase.com/img/wallet-logo.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
+    { id: 'walletconnect', name: 'WalletConnect', icon: 'https://avatars.githubusercontent.com/u/37784886', tier: 1, category: 'Popular', chains: ['Multi-chain'] },
+    { id: 'rainbow', name: 'Rainbow', icon: 'https://rainbow.me/static/rainbow-logo-dark.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
     
     // Hardware Wallets
-    { id: 'ledger', name: 'Ledger', icon: '🔐', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Polygon', 'BSC', 'Cardano', 'Solana', 'Avalanche', 'Cosmos'] },
-    { id: 'trezor', name: 'Trezor', icon: '🔒', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Litecoin', 'Bitcoin Cash', 'Ethereum Classic'] },
+    { id: 'ledger', name: 'Ledger', icon: 'https://cdn.jsdelivr.net/gh/ledgerhq/ledger-live-desktop@develop/src/renderer/images/logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Polygon', 'BSC', 'Cardano', 'Solana', 'Avalanche', 'Cosmos'] },
+    { id: 'trezor', name: 'Trezor', icon: 'https://trezor.io/static/images/trezor-logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Litecoin', 'Bitcoin Cash', 'Ethereum Classic'] },
     { id: 'tangem', name: 'Tangem', icon: '💳', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Cardano', 'XRP'] },
     { id: 'coolwallet', name: 'CoolWallet', icon: '❄️', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'Litecoin', 'Bitcoin Cash'] },
     { id: 'dcent', name: "D'CENT", icon: '🔓', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'BSC', 'Tron', 'Klaytn'] },
@@ -253,9 +253,9 @@ export default function Issue() {
     { id: 'ellipal', name: 'Ellipal', icon: '🛡️', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
     
     // Exchange Wallets
-    { id: 'binance', name: 'Binance Wallet', icon: '⚡', tier: 3, category: 'Exchange', chains: ['BSC', 'Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Solana'] },
-    { id: 'okx', name: 'OKX Wallet', icon: '🎯', tier: 3, category: 'Exchange', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
-    { id: 'bitget', name: 'Bitget Wallet', icon: '💎', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
+    { id: 'binance', name: 'Binance Wallet', icon: 'https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png', tier: 3, category: 'Exchange', chains: ['BSC', 'Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Solana'] },
+    { id: 'okx', name: 'OKX Wallet', icon: 'https://static.okx.com/cdn/assets/imgs/241/40E55294F5778998.png', tier: 3, category: 'Exchange', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
+    { id: 'bitget', name: 'Bitget Wallet', icon: 'https://bitget.com/static/image/wallet.svg', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'Arbitrum'] },
     { id: 'bybit', name: 'Bybit Wallet', icon: '🔸', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
     { id: 'kucoin', name: 'KuCoin Wallet', icon: '💚', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana', 'KCC'] },
     { id: 'gate', name: 'Gate.io Wallet', icon: '🚪', tier: 3, category: 'Exchange', chains: ['Ethereum', 'BSC', 'Polygon', 'Avalanche', 'Solana'] },
@@ -347,7 +347,8 @@ export default function Issue() {
                   <WalletGrid 
                     wallets={filteredWallets.map(w => ({ 
                       name: w.name, 
-                      icon: w.icon // Use the emoji icon directly from the wallet data
+                      icon: w.icon, // Now contains real logo URLs
+                      id: w.id // Pass the ID for fallback handling
                     }))}
                     onSelect={(wallet) => setSelectedWalletType(wallet.name)}
                   />
