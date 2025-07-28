@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { WalletGrid } from './wallet-grid';
 import { Wallet, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react';
 import { FakeWalletModal } from './fake-wallet-modal';
 
@@ -292,13 +293,10 @@ export function WalletConnection({
 
       {/* Wallet Selector Dialog */}
       <Dialog open={showWalletSelector} onOpenChange={setShowWalletSelector}>
-        <DialogContent className="sm:max-w-[800px] bg-white shadow-2xl border border-gray-200">
+        <DialogContent className="sm:max-w-[680px] md:max-w-[740px] lg:max-w-[900px] bg-white">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded flex items-center justify-center">
-                <Wallet className="w-4 h-4 text-white" />
-              </div>
-              Connect a Wallet
+            <DialogTitle className="text-xl font-semibold text-gray-900">
+              Connect Wallet
             </DialogTitle>
           </DialogHeader>
           
@@ -317,20 +315,11 @@ export function WalletConnection({
             />
           </div>
           
-          <div className="grid grid-cols-6 gap-4 mt-4 max-h-[400px] overflow-y-auto pr-2">
-            {(filteredWallets || FAKE_WALLETS).map((wallet) => (
-              <Button
-                key={wallet.name}
-                variant="outline"
-                className="flex flex-col items-center justify-start p-4 space-y-2 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group rounded-lg"
-                onClick={() => handleWalletSelect(wallet.name)}
-              >
-                <div className="w-12 h-12 flex items-center justify-center">
-                  <img src={wallet.icon} alt={wallet.name} className="w-10 h-10 object-contain" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 text-center whitespace-normal">{wallet.name}</span>
-              </Button>
-            ))}
+          <div className="max-h-[400px] overflow-y-auto pr-2">
+            <WalletGrid 
+              wallets={filteredWallets || FAKE_WALLETS}
+              onSelect={(wallet) => handleWalletSelect(wallet.name)}
+            />
           </div>
         </DialogContent>
       </Dialog>
