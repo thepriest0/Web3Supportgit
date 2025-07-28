@@ -43,11 +43,11 @@ export function WalletConnection({
     <div className={`${compact ? 'inline-block' : 'text-center space-y-4'}`}>
       {!compact && (
         <div className="flex flex-col items-center space-y-3 mb-6">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-            <Wallet className="w-8 h-8 text-blue-600" />
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+            <Wallet className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Connect Your Wallet</h3>
+            <h3 className="text-xl font-bold text-gray-900">Connect Your Wallet</h3>
             <p className="text-gray-600 text-sm">
               Connect your wallet to access Web3 support services
             </p>
@@ -58,7 +58,7 @@ export function WalletConnection({
       <Button
         onClick={() => setShowWalletSelector(true)}
         size={compact ? "default" : "lg"}
-        className={`${compact ? '' : 'w-full'} bg-blue-500 hover:bg-blue-600 text-white`}
+        className={`${compact ? '' : 'w-full'} bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium`}
       >
         <Wallet className="w-4 h-4 mr-2" />
         Connect Wallet
@@ -66,23 +66,28 @@ export function WalletConnection({
 
       {/* Wallet Selector Dialog */}
       <Dialog open={showWalletSelector} onOpenChange={setShowWalletSelector}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white shadow-2xl border border-gray-200">
           <DialogHeader>
-            <DialogTitle>Connect a Wallet</DialogTitle>
-            <DialogDescription>
-              Choose your preferred wallet to connect
+            <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded flex items-center justify-center">
+                <Wallet className="w-4 h-4 text-white" />
+              </div>
+              Connect a Wallet
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Choose your preferred wallet to connect and access Web3 support services
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 mt-4">
             {FAKE_WALLETS.map((wallet) => (
               <Button
                 key={wallet.name}
                 variant="outline"
-                className="h-16 flex flex-col items-center justify-center space-y-2"
+                className="h-20 flex flex-col items-center justify-center space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
                 onClick={() => handleWalletSelect(wallet.name)}
               >
-                <span className="text-2xl">{wallet.icon}</span>
-                <span className="text-sm">{wallet.name}</span>
+                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">{wallet.name}</span>
               </Button>
             ))}
           </div>

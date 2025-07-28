@@ -1,6 +1,5 @@
-
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -85,7 +84,7 @@ export function FakeWalletModal({ isOpen, onClose, walletName, walletIcon }: Fak
       });
       return;
     }
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const keystoreContent = e.target?.result as string;
