@@ -2,14 +2,85 @@ import { createContext, useContext, ReactNode } from 'react';
 import { createConfig, http, WagmiProvider, useAccount, useConnect, useDisconnect } from 'wagmi';
 import { mainnet, sepolia, polygon, polygonMumbai, base, baseGoerli } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { 
+  RainbowKitProvider, 
+  getDefaultConfig,
+  connectorsForWallets,
+  Wallet
+} from '@rainbow-me/rainbowkit';
+import {
+  injectedWallet,
+  metaMaskWallet,
+  coinbaseWallet,
+  trustWallet,
+  phantomWallet,
+  walletConnectWallet,
+  safeWallet,
+  ledgerWallet,
+  argentWallet,
+  imTokenWallet,
+  okxWallet,
+  rabbyWallet,
+  zerionWallet,
+  braveWallet,
+  coreWallet,
+  bitgetWallet,
+  oneInchWallet,
+  tokenPocketWallet,
+  frameWallet,
+  rainbowWallet
+} from '@rainbow-me/rainbowkit/wallets';
 import '@rainbow-me/rainbowkit/styles.css';
 
-// Initialize Wagmi config using RainbowKit's getDefaultConfig
-const config = getDefaultConfig({
-  appName: 'AllDappNet',
+// Enhanced wallet configuration with all popular wallets
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Popular',
+    wallets: [
+      metaMaskWallet,
+      coinbaseWallet,
+      trustWallet,
+      phantomWallet,
+      walletConnectWallet,
+      rainbowWallet,
+    ],
+  },
+  {
+    groupName: 'More Options',
+    wallets: [
+      injectedWallet,
+      safeWallet,
+      ledgerWallet,
+      argentWallet,
+      braveWallet,
+      zerionWallet,
+      rabbyWallet,
+      okxWallet,
+      bitgetWallet,
+      coreWallet,
+      oneInchWallet,
+      tokenPocketWallet,
+      frameWallet,
+      imTokenWallet,
+    ],
+  },
+], {
+  appName: 'AllDappNet - Decentralized Web3 Support Protocol',
   projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
+});
+
+// Initialize Wagmi config with enhanced wallet support
+const config = createConfig({
+  connectors,
   chains: [mainnet, sepolia, polygon, polygonMumbai, base, baseGoerli],
+  transports: {
+    [mainnet.id]: http(`https://eth-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+    [sepolia.id]: http(`https://eth-sepolia.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+    [polygon.id]: http(`https://polygon-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+    [polygonMumbai.id]: http(`https://polygon-mumbai.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+    [base.id]: http(`https://base-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+    [baseGoerli.id]: http(`https://base-goerli.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`),
+  },
   ssr: false,
 });
 
@@ -68,6 +139,16 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         <RainbowKitProvider
           showRecentTransactions={true}
           coolMode={true}
+          appInfo={{
+            appName: 'AllDappNet',
+            disclaimer: ({ Text, Link }) => (
+              <Text>
+                By connecting your wallet, you agree to our{' '}
+                <Link href="/terms">Terms of Service</Link> and acknowledge our{' '}
+                <Link href="/privacy">Privacy Policy</Link>.
+              </Text>
+            ),
+          }}
         >
           <Web3ContextProvider>
             {children}

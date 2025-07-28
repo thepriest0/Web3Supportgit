@@ -3,13 +3,17 @@ import { Navbar } from '@/components/navbar';
 import { SearchBar } from '@/components/search-bar';
 import { SupportCategoryCard } from '@/components/support-category-card';
 import { TrustIndicators } from '@/components/trust-indicators';
+import { WalletInfo } from '@/components/wallet-info';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { supportCategories, getAllTags } from '@/lib/support-categories';
+import { Wallet, Shield, Zap } from 'lucide-react';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('All');
+  const [showWalletInfo, setShowWalletInfo] = useState(false);
   
   const allTags = ['All', ...getAllTags()];
   
@@ -52,9 +56,7 @@ export default function Home() {
             <span className="block text-blue-500 mt-2">Support Protocol</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Our protocol, driven by artificial intelligence, guarantees smooth connectivity and safe asset 
-            administration by automatically addressing synchronization hurdles among non-custodial wallets, 
-            without any need for human involvement.
+            Resolve blockchain issues with real DeFi protocols. Connect any of 20+ supported wallets and access authentic Uniswap, Aave, and other established protocol integrations.
           </p>
           
           <SearchBar onSearch={setSearchQuery} />
@@ -74,13 +76,56 @@ export default function Home() {
               <span>{stats.successRate} Success Rate</span>
             </div>
           </div>
+          
+          {/* Wallet Support Highlight */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 border-purple-200 dark:border-purple-800">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-100 mb-2 flex items-center justify-center md:justify-start gap-2">
+                      <Wallet className="h-6 w-6" />
+                      20+ Supported Wallets
+                    </h3>
+                    <p className="text-purple-800 dark:text-purple-200 mb-4">
+                      Connect with MetaMask, Coinbase, Trust Wallet, Phantom, and 16+ other popular Web3 wallets
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                      <span className="text-2xl">🦊</span>
+                      <span className="text-2xl">🟦</span>
+                      <span className="text-2xl">🛡️</span>
+                      <span className="text-2xl">👻</span>
+                      <span className="text-2xl">🌈</span>
+                      <span className="text-2xl">🔐</span>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => setShowWalletInfo(!showWalletInfo)}
+                    variant="outline"
+                    className="bg-white/50 hover:bg-white/70 text-purple-900 border-purple-300"
+                  >
+                    {showWalletInfo ? 'Hide' : 'View All'} Supported Wallets
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
+
+      {/* Wallet Info Section */}
+      {showWalletInfo && (
+        <section className="bg-white dark:bg-gray-900 py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <WalletInfo />
+          </div>
+        </section>
+      )}
 
       {/* Support Categories */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Web3 Support Categories</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Web3 Support Categories</h2>
           <p className="text-gray-600">Select the category that best describes your Web3 issue for automated resolution</p>
         </div>
 
