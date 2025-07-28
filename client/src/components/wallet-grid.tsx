@@ -7,22 +7,22 @@ interface WalletGridProps {
 
 export function WalletGrid({ wallets, onSelect }: WalletGridProps) {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 p-6">
+    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6 p-4">
       {wallets.map((wallet) => (
         <Button
           key={wallet.name}
           variant="outline"
-          className="flex flex-col items-center justify-center gap-3 h-auto p-4 hover:bg-gray-100 transition-all"
+          className="flex flex-col items-center justify-center gap-3 h-auto p-4 hover:bg-gray-50 transition-all border rounded-xl"
           onClick={() => onSelect(wallet)}
         >
-          <div className="relative w-16 h-16 rounded-full overflow-hidden flex items-center justify-center p-2 border">
+          <div className="relative w-16 h-16">
             <img
               src={wallet.icon}
               alt={wallet.name}
-              className="w-12 h-12 object-contain"
+              className="w-full h-full"
             />
           </div>
-          <span className="text-sm text-center font-medium">{wallet.name}</span>
+          <span className="text-sm text-center font-medium text-gray-900">{wallet.name}</span>
         </Button>
       ))}
     </div>

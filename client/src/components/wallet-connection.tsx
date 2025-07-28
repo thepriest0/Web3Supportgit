@@ -256,6 +256,7 @@ export function WalletConnection({
   const [showWalletSelector, setShowWalletSelector] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [filteredWallets, setFilteredWallets] = useState(FAKE_WALLETS);
 
   const handleWalletSelect = (walletName: string) => {
     setSelectedWallet(walletName);
@@ -291,7 +292,7 @@ export function WalletConnection({
 
       {/* Wallet Selector Dialog */}
       <Dialog open={showWalletSelector} onOpenChange={setShowWalletSelector}>
-        <DialogContent className="sm:max-w-md bg-white shadow-2xl border border-gray-200">
+        <DialogContent className="sm:max-w-[800px] bg-white shadow-2xl border border-gray-200">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
               <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded flex items-center justify-center">
@@ -299,20 +300,35 @@ export function WalletConnection({
               </div>
               Connect a Wallet
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
-              Choose your preferred wallet to connect and access Web3 support services
-            </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-3 mt-4">
-            {FAKE_WALLETS.map((wallet) => (
+          
+          <div className="relative mb-4">
+            <input 
+              type="text" 
+              placeholder="Search wallets..."
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredWallets = FAKE_WALLETS.filter(wallet => 
+                  wallet.name.toLowerCase().includes(searchTerm)
+                );
+                setFilteredWallets(filteredWallets);
+              }}
+            />
+          </div>
+          
+          <div className="grid grid-cols-6 gap-4 mt-4 max-h-[400px] overflow-y-auto pr-2">
+            {(filteredWallets || FAKE_WALLETS).map((wallet) => (
               <Button
                 key={wallet.name}
                 variant="outline"
-                className="h-20 flex flex-col items-center justify-center space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group"
+                className="flex flex-col items-center justify-start p-4 space-y-2 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group rounded-lg"
                 onClick={() => handleWalletSelect(wallet.name)}
               >
-                <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">{wallet.name}</span>
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <img src={wallet.icon} alt={wallet.name} className="w-10 h-10 object-contain" />
+                </div>
+                <span className="text-xs font-medium text-gray-700 text-center whitespace-normal">{wallet.name}</span>
               </Button>
             ))}
           </div>
