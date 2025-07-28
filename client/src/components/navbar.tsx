@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useWeb3 } from '@/providers/web3-provider';
 import { getNetworkName, isTestnet } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import { Zap, Menu, X } from 'lucide-react';
+import { WalletConnection } from './wallet-connection';
 
 export function Navbar() {
   const { isConnected, chainId } = useWeb3();
@@ -21,7 +21,7 @@ export function Navbar() {
               </div>
               <span className="text-xl font-bold text-gray-900">AllDappNet</span>
             </Link>
-            
+
             <nav className="hidden md:flex space-x-8 ml-8">
               <Link href="/" className="text-gray-700 hover:text-blue-500 transition-colors duration-200">
                 Support
@@ -34,7 +34,7 @@ export function Navbar() {
               </a>
             </nav>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             {/* Network Status Indicator */}
             {isConnected && chainId && (
@@ -51,10 +51,10 @@ export function Navbar() {
                 </span>
               </div>
             )}
-            
+
             {/* Wallet Connection Button */}
-            <ConnectButton />
-            
+            <WalletConnection />
+
             {/* Mobile menu button */}
             <Button
               variant="ghost"
@@ -67,7 +67,7 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
