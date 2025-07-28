@@ -33,40 +33,17 @@ import {
 import '@rainbow-me/rainbowkit/styles.css';
 
 // Enhanced wallet configuration with all popular wallets
+// Minimal connectors setup to prevent WalletConnect errors
 const connectors = connectorsForWallets([
   {
-    groupName: 'Popular',
-    wallets: [
-      metaMaskWallet,
-      coinbaseWallet,
-      trustWallet,
-      phantomWallet,
-      walletConnectWallet,
-      rainbowWallet,
-    ],
-  },
-  {
-    groupName: 'More Options',
+    groupName: 'Basic',
     wallets: [
       injectedWallet,
-      safeWallet,
-      ledgerWallet,
-      argentWallet,
-      braveWallet,
-      zerionWallet,
-      rabbyWallet,
-      okxWallet,
-      bitgetWallet,
-      coreWallet,
-      oneInchWallet,
-      tokenPocketWallet,
-      frameWallet,
-      imTokenWallet,
     ],
   },
 ], {
   appName: 'AllDappNet - Decentralized Web3 Support Protocol',
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
+  projectId: 'disabled',
 });
 
 // Initialize Wagmi config with enhanced wallet support
