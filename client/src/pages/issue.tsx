@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getCategoryBySlug } from '@/lib/support-categories';
 import { useWeb3Operations } from '@/hooks/use-web3';
+import { useProtocolOperations } from '@/hooks/use-protocol-operations';
 import { useWeb3 } from '@/providers/web3-provider';
 import { getNetworkName, isTestnet, estimateGasForFunction } from '@/lib/contracts';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -20,15 +21,29 @@ export default function Issue() {
   const [, params] = useRoute('/issue/:slug');
   const { isConnected, chainId } = useWeb3();
   const { 
-    loading, 
+    loading: web3Loading, 
     signMessage, 
-    validateWallet, 
+    validateWallet: oldValidateWallet, 
     claimAirdrop, 
     stakeTokens, 
     bridgeAssets,
     executeContractFunction,
     switchToSupportedNetwork 
   } = useWeb3Operations();
+  
+  const {
+    validateWallet: protocolValidateWallet,
+    fixSlippageIssue,
+    swapTokens,
+    supplyToLending,
+    withdrawFromLending,
+    approveTokenSpending,
+    switchToOptimalNetwork,
+    loading: protocolLoading,
+    isMainnet: isOnMainnet,
+    getProtocolAddress,
+    getTokenAddress,
+  } = useProtocolOperations();
   
   const [txHash, setTxHash] = useState<string>('');
   const [step, setStep] = useState<'connect' | 'sign' | 'execute' | 'complete'>('connect');
@@ -68,34 +83,67 @@ export default function Issue() {
     }
   };
 
-  const handleExecuteContract = async () => {
-    if (!category.contractFunction) return;
-    
+  // Real protocol operation handler based on category
+  const handleExecuteProtocolOperation = async () => {
     let result = null;
     
-    switch (category.contractFunction) {
-      case 'validateWallet':
-        result = await validateWallet();
-        break;
-      case 'claimAirdrop':
-        // In a real implementation, you would get the actual merkle proof
-        result = await claimAirdrop([]);
-        break;
-      case 'stakeTokens':
-        // Example: stake 0.01 ETH
-        result = await stakeTokens(BigInt('10000000000000000'));
-        break;
-      case 'bridgeAssets':
-        // Example: bridge ETH
-        result = await bridgeAssets('0x0000000000000000000000000000000000000000', BigInt('10000000000000000'));
-        break;
-      default:
-        result = await executeContractFunction(category.contractFunction);
-    }
-    
-    if (result) {
-      setTxHash(result);
-      setStep('complete');
+    try {
+      switch (category.slug) {
+        case 'slippage-protection':
+          // Use real Uniswap for slippage protection
+          const ethAddress = getTokenAddress('ETH') || '0x0000000000000000000000000000000000000000';
+          const usdcAddress = getTokenAddress('USDC') || '';
+          result = await fixSlippageIssue(ethAddress, usdcAddress, '0.1', 1);
+          break;
+          
+        case 'token-swap':
+          // Use real Uniswap for token swaps
+          const wethAddress = getTokenAddress('WETH') || '';
+          const daiAddress = getTokenAddress('DAI') || '';
+          result = await swapTokens(wethAddress, daiAddress, '0.1');
+          break;
+          
+        case 'lending-borrowing':
+          // Use real Aave for lending
+          const usdcForLending = getTokenAddress('USDC') || '';
+          result = await supplyToLending(usdcForLending, '100');
+          break;
+          
+        case 'yield-farming':
+          // Supply to Aave for yield
+          const daiForYield = getTokenAddress('DAI') || '';
+          result = await supplyToLending(daiForYield, '50');
+          break;
+          
+        case 'wallet-validation':
+          // Use protocol wallet validation
+          result = await protocolValidateWallet();
+          break;
+          
+        case 'transaction-stuck':
+          // Help user speed up transaction with higher gas
+          await switchToOptimalNetwork('swap');
+          result = { success: true, message: 'Switched to optimal network' };
+          break;
+          
+        case 'cross-chain-bridge':
+          // Guide user through bridge setup
+          result = await bridgeAssets('0x0000000000000000000000000000000000000000', BigInt('10000000000000000'));
+          break;
+          
+        default:
+          // Fallback to old contract function
+          result = await executeContractFunction(category.contractFunction || 'validateWallet');
+          break;
+      }
+      
+      if (result) {
+        setTxHash(typeof result === 'string' ? result : JSON.stringify(result));
+        setStep('complete');
+      }
+    } catch (error) {
+      console.error('Protocol operation failed:', error);
+      setStep('connect'); // Reset to beginning
     }
   };
 
@@ -144,7 +192,7 @@ export default function Issue() {
               <span>Message signed successfully</span>
             </div>
             <p className="text-gray-600 mb-6">
-              Now we'll execute the smart contract function to resolve your issue automatically.
+              Now we'll execute the real DeFi protocol operation to resolve your issue automatically.
             </p>
             {chainId && isTestnet(chainId) && (
               <Alert className="mb-6">
@@ -160,23 +208,29 @@ export default function Issue() {
                 <span>{formatEther(estimatedGas)} ETH</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Function:</span>
-                <code className="text-blue-600">{category.contractFunction}</code>
+                <span>Protocol:</span>
+                <code className="text-blue-600">{
+                  category.slug === 'slippage-protection' ? 'Uniswap V2' :
+                  category.slug === 'token-swap' ? 'Uniswap V3' :
+                  category.slug === 'lending-borrowing' ? 'Aave V3' :
+                  category.slug === 'yield-farming' ? 'Aave V3' :
+                  'DeFi Protocol'
+                }</code>
               </div>
             </div>
             <Button 
-              onClick={handleExecuteContract} 
+              onClick={handleExecuteProtocolOperation} 
               size="lg" 
               className="w-full"
-              disabled={loading}
+              disabled={web3Loading || protocolLoading}
             >
-              {loading ? (
+              {(web3Loading || protocolLoading) ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Executing...
                 </>
               ) : (
-                'Execute Smart Contract'
+                'Execute Protocol Operation'
               )}
             </Button>
           </>

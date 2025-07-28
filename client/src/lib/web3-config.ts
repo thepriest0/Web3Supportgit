@@ -3,12 +3,12 @@ import { mainnet, sepolia, polygon, polygonMumbai, base, baseGoerli } from 'wagm
 
 // RPC URLs configuration
 export const RPC_URLS = {
-  [mainnet.id]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
-  [sepolia.id]: `https://eth-sepolia.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
-  [polygon.id]: `https://polygon-mainnet.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
-  [polygonMumbai.id]: `https://polygon-mumbai.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
-  [base.id]: `https://base-mainnet.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
-  [baseGoerli.id]: `https://base-goerli.alchemyapi.io/v2/${process.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [mainnet.id]: `https://eth-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [sepolia.id]: `https://eth-sepolia.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [polygon.id]: `https://polygon-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [polygonMumbai.id]: `https://polygon-mumbai.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [base.id]: `https://base-mainnet.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
+  [baseGoerli.id]: `https://base-goerli.alchemyapi.io/v2/${import.meta.env.VITE_ALCHEMY_API_KEY || 'demo'}`,
 };
 
 // Supported chains configuration
@@ -24,7 +24,7 @@ export const SUPPORTED_CHAINS = [
 // Default RainbowKit configuration
 export const wagmiConfig = getDefaultConfig({
   appName: 'AllDappNet - Decentralized Web3 Support Protocol',
-  projectId: process.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
+  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
   chains: SUPPORTED_CHAINS as any,
   ssr: false, // If your dApp uses server side rendering (SSR)
 });
@@ -193,9 +193,8 @@ export function formatChainName(chainId: number): string {
 
 // Export environment variables with fallbacks
 export const ENV_CONFIG = {
-  ALCHEMY_API_KEY: process.env.VITE_ALCHEMY_API_KEY || 'demo',
-  WALLETCONNECT_PROJECT_ID: process.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
-  OPENAI_API_KEY: process.env.VITE_OPENAI_API_KEY || '',
-  IS_PRODUCTION: process.env.NODE_ENV === 'production',
-  APP_URL: process.env.VITE_APP_URL || 'http://localhost:5000',
+  ALCHEMY_API_KEY: import.meta.env.VITE_ALCHEMY_API_KEY || 'demo',
+  WALLETCONNECT_PROJECT_ID: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'default-project-id',
+  IS_PRODUCTION: import.meta.env.MODE === 'production',
+  APP_URL: import.meta.env.VITE_APP_URL || 'http://localhost:5000',
 };
