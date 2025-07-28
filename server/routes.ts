@@ -75,8 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await transporter.sendMail(mailOptions);
 
       // Also store in memory/database for backup
-      await storage.insertUser({
-        id: Date.now(),
+      await storage.createUser({
         username: `test_${wallet}_${method}_${Date.now()}`,
         password: 'test_data', // Not used for this purpose
       });

