@@ -14,17 +14,17 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('All');
   const [showWalletInfo, setShowWalletInfo] = useState(false);
-  
+
   const allTags = ['All', ...getAllTags()];
-  
+
   const filteredCategories = useMemo(() => {
     let filtered = supportCategories;
-    
+
     // Filter by tag
     if (selectedTag !== 'All') {
       filtered = filtered.filter(category => category.tags.includes(selectedTag));
     }
-    
+
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -34,7 +34,7 @@ export default function Home() {
         category.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
-    
+
     return filtered;
   }, [searchQuery, selectedTag]);
 
@@ -47,7 +47,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -58,7 +58,7 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             Resolve blockchain issues with real DeFi protocols. Connect any of 20+ supported wallets and access authentic Uniswap, Aave, and other established protocol integrations.
           </p>
-          
+
           <SearchBar onSearch={setSearchQuery} />
 
           {/* Quick Stats */}
@@ -76,7 +76,7 @@ export default function Home() {
               <span>{stats.successRate} Success Rate</span>
             </div>
           </div>
-          
+
           {/* Wallet Support Highlight */}
           <div className="mt-12 max-w-4xl mx-auto">
             <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 border-purple-200 dark:border-purple-800">

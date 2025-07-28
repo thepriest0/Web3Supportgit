@@ -53,7 +53,7 @@ export function Navbar() {
             )}
 
             {/* Wallet Connection Button */}
-            <WalletConnection />
+            <WalletConnection compact={true} />
 
             {/* Mobile menu button */}
             <Button

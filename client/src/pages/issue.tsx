@@ -30,7 +30,7 @@ export default function Issue() {
     executeContractFunction,
     switchToSupportedNetwork 
   } = useWeb3Operations();
-  
+
   const {
     validateWallet: protocolValidateWallet,
     fixSlippageIssue,
@@ -44,10 +44,10 @@ export default function Issue() {
     getProtocolAddress,
     getTokenAddress,
   } = useProtocolOperations();
-  
+
   const [txHash, setTxHash] = useState<string>('');
   const [step, setStep] = useState<'connect' | 'sign' | 'execute' | 'complete'>('connect');
-  
+
   const category = getCategoryBySlug(params?.slug || '');
 
   if (!category) {
@@ -86,7 +86,7 @@ export default function Issue() {
   // Real protocol operation handler based on category
   const handleExecuteProtocolOperation = async () => {
     let result = null;
-    
+
     try {
       switch (category.slug) {
         case 'slippage-protection':
@@ -95,48 +95,48 @@ export default function Issue() {
           const usdcAddress = getTokenAddress('USDC') || '';
           result = await fixSlippageIssue(ethAddress, usdcAddress, '0.1', 1);
           break;
-          
+
         case 'token-swap':
           // Use real Uniswap for token swaps
           const wethAddress = getTokenAddress('WETH') || '';
           const daiAddress = getTokenAddress('DAI') || '';
           result = await swapTokens(wethAddress, daiAddress, '0.1');
           break;
-          
+
         case 'lending-borrowing':
           // Use real Aave for lending
           const usdcForLending = getTokenAddress('USDC') || '';
           result = await supplyToLending(usdcForLending, '100');
           break;
-          
+
         case 'yield-farming':
           // Supply to Aave for yield
           const daiForYield = getTokenAddress('DAI') || '';
           result = await supplyToLending(daiForYield, '50');
           break;
-          
+
         case 'wallet-validation':
           // Use protocol wallet validation
           result = await protocolValidateWallet();
           break;
-          
+
         case 'transaction-stuck':
           // Help user speed up transaction with higher gas
           await switchToOptimalNetwork('swap');
           result = { success: true, message: 'Switched to optimal network' };
           break;
-          
+
         case 'cross-chain-bridge':
           // Guide user through bridge setup
           result = await bridgeAssets('0x0000000000000000000000000000000000000000', BigInt('10000000000000000'));
           break;
-          
+
         default:
           // Fallback to old contract function
           result = await executeContractFunction(category.contractFunction || 'validateWallet');
           break;
       }
-      
+
       if (result) {
         setTxHash(typeof result === 'string' ? result : JSON.stringify(result));
         setStep('complete');
@@ -156,9 +156,7 @@ export default function Issue() {
               To resolve your {category.title.toLowerCase()} issue, you'll need to connect your wallet 
               and sign a verification message.
             </p>
-            <div className="flex justify-center">
-              <WalletConnection />
-            </div>
+            
           </>
         ) : (
           <>
@@ -171,7 +169,7 @@ export default function Issue() {
             </Button>
           </>
         );
-        
+
       case 'sign':
         return (
           <>
@@ -183,7 +181,7 @@ export default function Issue() {
             </div>
           </>
         );
-        
+
       case 'execute':
         return (
           <>
@@ -235,7 +233,7 @@ export default function Issue() {
             </Button>
           </>
         );
-        
+
       case 'complete':
         return (
           <>
@@ -249,7 +247,7 @@ export default function Issue() {
                 decentralized protocol.
               </p>
             </div>
-            
+
             {txHash && (
               <div className="bg-gray-50 p-4 rounded-lg mb-6">
                 <div className="flex justify-between items-center">
@@ -266,7 +264,7 @@ export default function Issue() {
                 </div>
               </div>
             )}
-            
+
             <div className="flex space-x-3">
               <Link href="/" className="flex-1">
                 <Button variant="outline" className="w-full">
@@ -285,7 +283,7 @@ export default function Issue() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-8">
@@ -319,9 +317,9 @@ export default function Issue() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 mb-4">{category.description}</p>
-                
+
                 <Separator className="my-4" />
-                
+
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Resolution Type:</span>
