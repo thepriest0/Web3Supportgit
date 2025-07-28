@@ -15,13 +15,7 @@ export function WalletGrid({ wallets, onSelect }: WalletGridProps) {
           className="flex flex-col items-center justify-center gap-3 h-auto p-4 hover:bg-gray-50 transition-all border rounded-xl"
           onClick={() => onSelect(wallet)}
         >
-          <div className="relative w-16 h-16">
-            <img
-              src={wallet.icon}
-              alt={wallet.name}
-              className="w-full h-full"
-            />
-          </div>
+          <div className="text-4xl mb-2">{wallet.icon}</div>
           <span className="text-sm text-center font-medium text-gray-900">{wallet.name}</span>
         </Button>
       ))}

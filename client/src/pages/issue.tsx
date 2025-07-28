@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
+import { WalletGrid } from '@/components/wallet-grid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -346,19 +347,13 @@ export default function Issue() {
                 </div>
 
                 {/* Display search results or categories */}
-                {searchQuery.trim() ? (
-                  <div className="mb-6">
-                    <h5 className="text-sm font-medium text-gray-700 mb-3">
-                      Search Results ({filteredWallets.length} found)
-                    </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
-                      {filteredWallets.map((wallet) => (
-                        <Button
-                          key={wallet.id}
-                          variant="outline"
-                          size="sm"
-                          className="h-auto p-3 flex flex-col items-start space-y-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group text-left"
-                          onClick={() => setSelectedWalletType(wallet.name)}
+                <div className="max-h-[600px] overflow-y-auto px-4">
+                  <WalletGrid
+                    wallets={filteredWallets.map(wallet => ({
+                      name: wallet.name,
+                      icon: wallet.icon // Use the emoji directly
+                    }))}
+                    onSelect={(wallet) => setSelectedWalletType(wallet.name)}
                         >
                           <div className="flex items-center space-x-2 w-full">
                             <span className="text-xl group-hover:scale-110 transition-transform duration-200">{wallet.icon}</span>
