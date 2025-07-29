@@ -239,7 +239,7 @@ export default function Issue() {
     { id: 'metamask', name: 'MetaMask', icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
     { id: 'trust', name: 'Trust Wallet', icon: 'https://trustwallet.com/assets/images/trust_platform.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
     { id: 'phantom', name: 'Phantom', icon: 'https://phantom.app/img/phantom-logo.svg', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
-    { id: 'coinbase', name: 'Coinbase Wallet', icon: 'https://www.coinbase.com/img/wallet-logo.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: 'https://img.icons8.com/color/48/coinbase.png', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
     { id: 'walletconnect', name: 'WalletConnect', icon: 'https://avatars.githubusercontent.com/u/37784886', tier: 1, category: 'Popular', chains: ['Multi-chain'] },
     { id: 'rainbow', name: 'Rainbow', icon: 'https://rainbow.me/static/rainbow-logo-dark.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
     
