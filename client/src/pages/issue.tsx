@@ -236,16 +236,16 @@ export default function Issue() {
   // Comprehensive wallet list with blockchain compatibility
   const allWallets = [
     // Tier 1 - Most Popular
-    { id: 'metamask', name: 'MetaMask', icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
-    { id: 'trust', name: 'Trust Wallet', icon: 'https://trustwallet.com/assets/images/trust_platform.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
-    { id: 'phantom', name: 'Phantom', icon: 'https://phantom.app/img/phantom-logo.svg', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
+    { id: 'metamask', name: 'MetaMask', icon: 'https://img.icons8.com/color/48/metamask-logo.png', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Arbitrum', 'Optimism'] },
+    { id: 'trust', name: 'Trust Wallet', icon: 'https://altcoinsbox.com/wp-content/uploads/2023/03/trust-wallet-logo.png', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'BSC', 'Polygon', 'Solana', 'Avalanche', 'Tron'] },
+    { id: 'phantom', name: 'Phantom', icon: 'https://coinlaunch.space/media/images/4/8/5/0/4850.sp3ow1.192x192.png', tier: 1, category: 'Popular', chains: ['Solana', 'Ethereum', 'Polygon'] },
     { id: 'coinbase', name: 'Coinbase Wallet', icon: 'https://img.icons8.com/color/48/coinbase.png', tier: 1, category: 'Popular', chains: ['Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Base', 'Optimism'] },
     { id: 'walletconnect', name: 'WalletConnect', icon: 'https://avatars.githubusercontent.com/u/37784886', tier: 1, category: 'Popular', chains: ['Multi-chain'] },
-    { id: 'rainbow', name: 'Rainbow', icon: 'https://rainbow.me/static/rainbow-logo-dark.svg', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
+    { id: 'rainbow', name: 'Rainbow', icon: 'https://cdn.prod.website-files.com/614c99cf4f23700c8aa3752a/658504efe542d333c43d4098_Rainbow%20Wallet%20Logo.png', tier: 1, category: 'Popular', chains: ['Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Base'] },
     
     // Hardware Wallets
-    { id: 'ledger', name: 'Ledger', icon: 'https://cdn.jsdelivr.net/gh/ledgerhq/ledger-live-desktop@develop/src/renderer/images/logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Polygon', 'BSC', 'Cardano', 'Solana', 'Avalanche', 'Cosmos'] },
-    { id: 'trezor', name: 'Trezor', icon: 'https://trezor.io/static/images/trezor-logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Litecoin', 'Bitcoin Cash', 'Ethereum Classic'] },
+    { id: 'ledger', name: 'Ledger', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDiJlY8Hd-XR2-ZuN-fh_wB2ogRwyWgyKm3w&s', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Polygon', 'BSC', 'Cardano', 'Solana', 'Avalanche', 'Cosmos'] },
+    { id: 'trezor', name: 'Trezor', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbhFPLA0Go25jQzedWWXRo40TRI8Unxdk-SQ&s', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'Litecoin', 'Bitcoin Cash', 'Ethereum Classic'] },
     { id: 'tangem', name: 'Tangem', icon: 'https://tangem.com/media/tangem-logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'BSC', 'Polygon', 'Cardano', 'XRP'] },
     { id: 'coolwallet', name: 'CoolWallet', icon: 'https://www.coolwallet.io/wp-content/themes/coolwallet/images/logo-dark.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'Litecoin', 'Bitcoin Cash'] },
     { id: 'dcent', name: "D'CENT", icon: 'https://dcentwallet.com/assets/images/logo/dcent-logo.svg', tier: 2, category: 'Hardware', chains: ['Bitcoin', 'Ethereum', 'XRP', 'BSC', 'Tron', 'Klaytn'] },
