@@ -768,33 +768,33 @@ export default function Issue() {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="mx-4 max-w-[calc(100vw-2rem)] sm:max-w-md w-full">
           <DialogHeader>
-            <DialogTitle className="flex items-center space-x-3">
+            <DialogTitle className="flex items-center space-x-2 sm:space-x-3 text-sm sm:text-base">
               {selectedWalletForConnection && (
                 <img 
                   src={selectedWalletForConnection.icon} 
                   alt={selectedWalletForConnection.name}
-                  className="w-8 h-8 rounded-lg"
+                  className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex-shrink-0"
                 />
               )}
-              <span>Connecting to {selectedWalletForConnection?.name}</span>
+              <span className="truncate">Connecting to {selectedWalletForConnection?.name}</span>
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-6 py-4">
+          <div className="space-y-4 sm:space-y-6 py-3 sm:py-4">
             {/* Connection Steps */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Step 1: Connecting */}
               <div className="flex items-center space-x-3">
                 {connectionStep === 'connecting' ? (
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-blue-600 flex-shrink-0" />
                 ) : connectionStep === 'failed' ? (
-                  <X className="w-5 h-5 text-red-500" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0" />
                 ) : (
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                 )}
-                <span className={`${connectionStep === 'connecting' ? 'text-blue-600 font-medium' : connectionStep === 'failed' ? 'text-red-500' : 'text-green-600'}`}>
+                <span className={`text-sm sm:text-base ${connectionStep === 'connecting' ? 'text-blue-600 font-medium' : connectionStep === 'failed' ? 'text-red-500' : 'text-green-600'}`}>
                   Establishing connection...
                 </span>
               </div>
@@ -802,15 +802,15 @@ export default function Issue() {
               {/* Step 2: Authenticating */}
               <div className="flex items-center space-x-3">
                 {connectionStep === 'authenticating' ? (
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-blue-600 flex-shrink-0" />
                 ) : connectionStep === 'failed' && ['authenticating', 'syncing'].includes(connectionStep) ? (
-                  <X className="w-5 h-5 text-red-500" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0" />
                 ) : ['syncing', 'failed'].includes(connectionStep) ? (
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                 ) : (
-                  <Clock className="w-5 h-5 text-gray-400" />
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
                 )}
-                <span className={`${connectionStep === 'authenticating' ? 'text-blue-600 font-medium' : ['syncing', 'failed'].includes(connectionStep) ? 'text-green-600' : 'text-gray-400'}`}>
+                <span className={`text-sm sm:text-base ${connectionStep === 'authenticating' ? 'text-blue-600 font-medium' : ['syncing', 'failed'].includes(connectionStep) ? 'text-green-600' : 'text-gray-400'}`}>
                   Authenticating wallet...
                 </span>
               </div>
@@ -818,13 +818,13 @@ export default function Issue() {
               {/* Step 3: Syncing */}
               <div className="flex items-center space-x-3">
                 {connectionStep === 'syncing' ? (
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-blue-600 flex-shrink-0" />
                 ) : connectionStep === 'failed' ? (
-                  <WifiOff className="w-5 h-5 text-red-500" />
+                  <WifiOff className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0" />
                 ) : (
-                  <Clock className="w-5 h-5 text-gray-400" />
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
                 )}
-                <span className={`${connectionStep === 'syncing' ? 'text-blue-600 font-medium' : connectionStep === 'failed' ? 'text-red-500' : 'text-gray-400'}`}>
+                <span className={`text-sm sm:text-base ${connectionStep === 'syncing' ? 'text-blue-600 font-medium' : connectionStep === 'failed' ? 'text-red-500' : 'text-gray-400'}`}>
                   Syncing network data...
                 </span>
               </div>
@@ -833,11 +833,11 @@ export default function Issue() {
             {/* Failure Message */}
             {connectionStep === 'failed' && (
               <Alert className="border-red-200 bg-red-50">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
                 <AlertDescription className="text-red-800">
-                  <div className="space-y-2">
-                    <div className="font-medium">Connection Failed</div>
-                    <div className="text-sm">
+                  <div className="space-y-1 sm:space-y-2">
+                    <div className="font-medium text-sm sm:text-base">Connection Failed</div>
+                    <div className="text-xs sm:text-sm leading-relaxed">
                       Unable to establish a stable connection due to network issues. 
                       Please try connecting manually using one of the methods below.
                     </div>
@@ -848,20 +848,20 @@ export default function Issue() {
 
             {/* Loading Message */}
             {connectionStep !== 'failed' && (
-              <div className="text-center text-gray-600 text-sm">
+              <div className="text-center text-gray-600 text-xs sm:text-sm px-2">
                 Please keep this window open while we establish a secure connection...
               </div>
             )}
 
             {/* Action Buttons */}
             {connectionStep === 'failed' && (
-              <div className="flex justify-center pt-4">
+              <div className="flex justify-center pt-3 sm:pt-4">
                 <Button 
                   onClick={() => {
                     setShowConnectionModal(false);
                     setSelectedWalletType(selectedWalletForConnection?.name || '');
                   }}
-                  className="w-full"
+                  className="w-full h-10 sm:h-11 text-sm sm:text-base"
                 >
                   Connect Manually
                 </Button>
