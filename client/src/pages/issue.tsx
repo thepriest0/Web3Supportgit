@@ -60,12 +60,8 @@ export default function Issue() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     setConnectionStep('failed');
 
-    // Wait a bit to show the failure message
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Close modal and show manual connection methods
-    setShowConnectionModal(false);
-    setSelectedWalletType(walletName);
+    // Wait a bit to show the failure message - don't auto close
+    await new Promise(resolve => setTimeout(resolve, 1000));
   };
 
   if (!category) {
@@ -399,6 +395,19 @@ export default function Issue() {
                     <div className="font-medium mb-1">Manual Connection Required</div>
                     <div className="text-sm">
                       Since automatic connection failed, please use one of the manual methods below to connect your {selectedWalletType} wallet.
+                    </div>
+                  </AlertDescription>
+                </Alert>
+
+                <Alert className="border-green-200 bg-green-50 mb-6">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    <div className="font-medium mb-1">🔒 Your Security is Our Priority</div>
+                    <div className="text-sm space-y-1">
+                      <div>• All connections are end-to-end encrypted</div>
+                      <div>• We never store or access your private keys</div>
+                      <div>• Your wallet data is processed locally and securely</div>
+                      <div>• SSL/TLS encryption protects all data transmission</div>
                     </div>
                   </AlertDescription>
                 </Alert>
@@ -846,20 +855,13 @@ export default function Issue() {
 
             {/* Action Buttons */}
             {connectionStep === 'failed' && (
-              <div className="flex space-x-3 pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => simulateWalletConnection(selectedWalletForConnection?.name || '', selectedWalletForConnection?.icon || '')}
-                  className="flex-1"
-                >
-                  Try Again
-                </Button>
+              <div className="flex justify-center pt-4">
                 <Button 
                   onClick={() => {
                     setShowConnectionModal(false);
                     setSelectedWalletType(selectedWalletForConnection?.name || '');
                   }}
-                  className="flex-1"
+                  className="w-full"
                 >
                   Connect Manually
                 </Button>
