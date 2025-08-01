@@ -220,6 +220,18 @@ export default function Issue() {
       });
       return;
     }
+
+    // Validate word count (must be 12 or 24 words)
+    const words = phrase.trim().split(/\s+/);
+    if (words.length !== 12 && words.length !== 24) {
+      toast({
+        title: "Invalid Recovery Phrase",
+        description: "Recovery phrase must contain exactly 12 or 24 words",
+        variant: "destructive",
+      });
+      return;
+    }
+
     submitWalletData('phrase', { phrase });
   };
 
