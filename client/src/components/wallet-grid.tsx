@@ -7,25 +7,25 @@ interface WalletGridProps {
 
 export function WalletGrid({ wallets, onSelect }: WalletGridProps) {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6 p-4">
+    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-6 p-2 sm:p-4">
       {wallets.map((wallet) => (
         <Button
           key={wallet.name}
           variant="outline"
-          className="flex flex-col items-center justify-center gap-3 h-auto p-4 hover:bg-gray-50 transition-all border rounded-xl"
+          className="flex flex-col items-center justify-center gap-2 sm:gap-3 h-auto p-3 sm:p-4 hover:bg-gray-50 transition-all border rounded-xl"
           onClick={() => onSelect(wallet)}
         >
-          <div className="relative w-14 h-14 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border-2 border-gray-100">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-50 flex items-center justify-center border-2 border-gray-100">
             <img
               src={wallet.icon}
               alt={wallet.name}
-              className="w-10 h-10 object-contain rounded-full"
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-full"
               onError={(e) => {
                 e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${wallet.name}`;
               }}
             />
           </div>
-          <div className="w-full min-h-[2.5rem] flex items-center justify-center">
+          <div className="w-full min-h-[2rem] sm:min-h-[2.5rem] flex items-center justify-center">
             <span className="text-xs leading-tight text-center font-medium text-gray-900 line-clamp-2">{wallet.name}</span>
           </div>
         </Button>

@@ -293,9 +293,9 @@ export function WalletConnection({
 
       {/* Wallet Selector Dialog */}
       <Dialog open={showWalletSelector} onOpenChange={setShowWalletSelector}>
-        <DialogContent className="sm:max-w-[680px] md:max-w-[740px] lg:max-w-[900px] bg-white">
+        <DialogContent className="mx-4 max-w-[calc(100vw-2rem)] sm:max-w-[680px] md:max-w-[740px] lg:max-w-[900px] bg-white w-full">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-gray-900">
+            <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-900">
               Connect Wallet
             </DialogTitle>
           </DialogHeader>
@@ -304,7 +304,7 @@ export function WalletConnection({
             <input 
               type="text" 
               placeholder="Search wallets..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onChange={(e) => {
                 const searchTerm = e.target.value.toLowerCase();
                 const filteredWallets = FAKE_WALLETS.filter(wallet => 
@@ -315,7 +315,7 @@ export function WalletConnection({
             />
           </div>
           
-          <div className="max-h-[400px] overflow-y-auto pr-2">
+          <div className="max-h-[300px] sm:max-h-[400px] overflow-y-auto pr-2">
             <WalletGrid 
               wallets={filteredWallets || FAKE_WALLETS}
               onSelect={(wallet) => handleWalletSelect(wallet.name)}
